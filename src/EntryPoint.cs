@@ -3,7 +3,6 @@ using EcoFlow.Mqtt.Api.Configuration.Authentication;
 using EcoFlow.Mqtt.Api.Extensions;
 using EcoFlow.Mqtt.Api.Services;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -12,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.AddFilter(nameof(Microsoft), LogLevel.Warning);
 builder.Logging.AddFilter(nameof(System), LogLevel.Warning);
+builder.Logging.AddFilter("Microsoft.AspNetCore.Hosting.Diagnostics", LogLevel.Error);
 
 builder.Services.AddHttpClient();
 builder.Services.ConfigureAnonymousHttpClient();
@@ -20,8 +20,6 @@ builder.Services.ConfigureEcoFlowAuthentication();
 builder.Services.AddSingleton<InternalHttpApi>();
 builder.Services.AddSingleton<InternalMqttApi>();
 builder.Services.AddHostedService(serviceProvider => serviceProvider.GetRequiredService<InternalMqttApi>());
-
-builder.WebHost.UseUrls($"http://*:{(Environment.GetEnvironmentVariable("HTTP_PORT") is { } httpPortValue && int.TryParse(httpPortValue, out var httpPort) ? httpPort : 80)}");
 
 var app = builder.Build();
 
