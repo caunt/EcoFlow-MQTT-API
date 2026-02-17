@@ -3,6 +3,7 @@ using EcoFlow.Mqtt.Api.Configuration.Authentication;
 using EcoFlow.Mqtt.Api.Extensions;
 using EcoFlow.Mqtt.Api.Services;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

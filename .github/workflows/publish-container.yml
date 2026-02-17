@@ -34,4 +34,4 @@ jobs:
         env:
           ContainerRegistry: ghcr.io
           ContainerRepository: caunt/ecoflow-mqtt-api
-          ContainerPort: 80
+          ContainerPort: 8080
