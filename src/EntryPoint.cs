@@ -30,7 +30,7 @@ var authentications = configuration.Value.Authentications;
 var authentication = authentications.FirstOrDefault(authentication => authentication is AppAuthentication) ?? authentications.First();
 
 if (authentications.Length > 1)
-    Console.WriteLine($"⚠️ Multiple authentication methods configured. Using the {authentication.GetType().Name}.");
+	Console.WriteLine($"⚠️ Multiple authentication methods configured. Using the {authentication.GetType().Name}.");
 
 var httpApi = app.Services.GetRequiredService<InternalHttpApi>();
 var mqttApi = app.Services.GetRequiredService<InternalMqttApi>();
@@ -45,8 +45,7 @@ var mqttConfiguration = await httpApi.GetMqttConfigurationAsync(session);
 Console.WriteLine($"🔌 Subscribing devices to MQTT ({mqttConfiguration.Url}:{mqttConfiguration.Port})...");
 
 foreach (var device in devices)
-    await mqttApi.SubscribeDeviceAsync(session, mqttConfiguration, device);
+	await mqttApi.SubscribeDeviceAsync(session, mqttConfiguration, device);
 
 app.MapGet("/", () => mqttApi.Devices);
 app.Run();
-
