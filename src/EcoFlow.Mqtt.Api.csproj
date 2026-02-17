@@ -7,15 +7,6 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
     
-    <PropertyGroup>
-        <ContainerRegistry>docker.io</ContainerRegistry>
-        <ContainerRepository>caunt/ecoflow-mqtt-api</ContainerRepository>
-    </PropertyGroup>
-    
-    <ItemGroup>
-        <ContainerPort Include="80" Type="tcp" />
-    </ItemGroup>
-
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App"/>
         <PackageReference Include="MQTTnet" Version="3.0.6"/>
