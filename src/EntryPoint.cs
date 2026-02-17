@@ -21,7 +21,7 @@ builder.Services.AddSingleton<InternalHttpApi>();
 builder.Services.AddSingleton<InternalMqttApi>();
 builder.Services.AddHostedService(serviceProvider => serviceProvider.GetRequiredService<InternalMqttApi>());
 
-builder.WebHost.UseUrls($"http://*:{(Environment.GetEnvironmentVariable("HTTP_PORT") is { } httpPortValue && int.TryParse(httpPortValue, out var httpPort) ? httpPort : 8000)}");
+builder.WebHost.UseUrls($"http://*:{(Environment.GetEnvironmentVariable("HTTP_PORT") is { } httpPortValue && int.TryParse(httpPortValue, out var httpPort) ? httpPort : 80)}");
 
 var app = builder.Build();
 
