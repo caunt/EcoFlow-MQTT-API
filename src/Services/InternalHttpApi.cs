@@ -1,7 +1,3 @@
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json.Nodes;
 using EcoFlow.Mqtt.Api.Configuration;
 using EcoFlow.Mqtt.Api.Configuration.Authentication;
 using EcoFlow.Mqtt.Api.Exceptions;
@@ -9,6 +5,10 @@ using EcoFlow.Mqtt.Api.Models;
 using EcoFlow.Mqtt.Api.Session;
 using Microsoft.Extensions.Options;
 using Nito.Disposables.Internals;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json.Nodes;
 
 namespace EcoFlow.Mqtt.Api.Services;
 
@@ -25,7 +25,7 @@ public class InternalHttpApi(IOptions<EcoFlowConfiguration> options, HttpClient 
 
         async Task<MqttConfiguration> GetMqttConfigurationCoreAsync(string path, Action<HttpRequestMessage> signRequest)
         {
-            using var request = new HttpRequestMessage(HttpMethod.Get, new Uri(options.Value.AppApiUri, path)); 
+            using var request = new HttpRequestMessage(HttpMethod.Get, new Uri(options.Value.AppApiUri, path));
             signRequest(request);
 
             var response = await httpClient.SendAsync(request, cancellationToken);
@@ -39,8 +39,8 @@ public class InternalHttpApi(IOptions<EcoFlowConfiguration> options, HttpClient 
             var password = node?["data"]?["certificatePassword"]?.GetValue<string>();
             var tls = node?["data"]?["protocol"]?.GetValue<string>() switch
             {
-                "mqtt" => false, 
-                "mqtts" => true, 
+                "mqtt" => false,
+                "mqtts" => true,
                 _ => throw new MqttConfigurationException($"Invalid MQTT configuration received: {node}")
             };
 
@@ -76,8 +76,8 @@ public class InternalHttpApi(IOptions<EcoFlowConfiguration> options, HttpClient 
                 _ => throw new DeviceListException($"Invalid device list received: {node}")
             };
 
-            return [..devices];
-        }   
+            return [.. devices];
+        }
     }
 
     public async Task<ISession> AuthenticateAsync(IAuthentication authentication, CancellationToken cancellationToken = default)
@@ -85,36 +85,36 @@ public class InternalHttpApi(IOptions<EcoFlowConfiguration> options, HttpClient 
         switch (authentication)
         {
             case AppAuthentication appAuthentication:
-            {
-                using var request = new HttpRequestMessage(HttpMethod.Post, new Uri(options.Value.AppApiUri, "/auth/login"));
-                request.Content = JsonContent.Create(new
                 {
-                    os = "linux",
-                    scene = "IOT_APP",
-                    appVersion = "1.0.0",
-                    osVersion = "5.15.90.1-kali-fake",
-                    password = Convert.ToBase64String(Encoding.UTF8.GetBytes(appAuthentication.Password)),
-                    oauth = new { bundleId = "com.ef.EcoFlow" },
-                    email = appAuthentication.Username,
-                    userType = "ECOFLOW"
-                });
+                    using var request = new HttpRequestMessage(HttpMethod.Post, new Uri(options.Value.AppApiUri, "/auth/login"));
+                    request.Content = JsonContent.Create(new
+                    {
+                        os = "linux",
+                        scene = "IOT_APP",
+                        appVersion = "1.0.0",
+                        osVersion = "5.15.90.1-kali-fake",
+                        password = Convert.ToBase64String(Encoding.UTF8.GetBytes(appAuthentication.Password)),
+                        oauth = new { bundleId = "com.ef.EcoFlow" },
+                        email = appAuthentication.Username,
+                        userType = "ECOFLOW"
+                    });
 
-                var response = await httpClient.SendAsync(request, cancellationToken);
-                response.EnsureSuccessStatusCode();
+                    var response = await httpClient.SendAsync(request, cancellationToken);
+                    response.EnsureSuccessStatusCode();
 
-                var node = await response.Content.ReadFromJsonAsync<JsonNode>(cancellationToken);
+                    var node = await response.Content.ReadFromJsonAsync<JsonNode>(cancellationToken);
 
-                var token = node?["data"]?["token"]?.GetValue<string>();
-                var userId = node?["data"]?["user"]?["userId"]?.GetValue<string>();
+                    var token = node?["data"]?["token"]?.GetValue<string>();
+                    var userId = node?["data"]?["user"]?["userId"]?.GetValue<string>();
 
-                if (string.IsNullOrEmpty(token))
-                    throw new AuthenticationException($"No token received from API: {node}");
+                    if (string.IsNullOrEmpty(token))
+                        throw new AuthenticationException($"No token received from API: {node}");
 
-                if (string.IsNullOrEmpty(userId))
-                    throw new AuthenticationException($"No user id received from API: {node}");
+                    if (string.IsNullOrEmpty(userId))
+                        throw new AuthenticationException($"No user id received from API: {node}");
 
-                return new AppSession(token, new User(userId));
-            }
+                    return new AppSession(token, new User(userId));
+                }
             case OpenAuthentication openAuthentication:
                 return new OpenSession(openAuthentication);
             default:

@@ -1,8 +1,3 @@
-using System.Collections.Concurrent;
-using System.Collections.Frozen;
-using System.Diagnostics.CodeAnalysis;
-using System.Text;
-using System.Text.Json.Nodes;
 using EcoFlow.Mqtt.Api.Extensions;
 using EcoFlow.Mqtt.Api.Models;
 using EcoFlow.Mqtt.Api.Session;
@@ -12,6 +7,11 @@ using MQTTnet.Client;
 using MQTTnet.Client.Options;
 using MQTTnet.Client.Receiving;
 using MQTTnet.Client.Subscribing;
+using System.Collections.Concurrent;
+using System.Collections.Frozen;
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
+using System.Text.Json.Nodes;
 
 namespace EcoFlow.Mqtt.Api.Services;
 
@@ -63,7 +63,7 @@ public class InternalMqttApi : IHostedService
 
             if (mqttConfiguration.Tls)
                 optionsBuilder = optionsBuilder.WithTls(new MqttClientOptionsBuilderTlsParameters { UseTls = true });
-            
+
             var options = optionsBuilder.Build();
             await state.Client.ConnectAsync(options);
         }
@@ -77,10 +77,10 @@ public class InternalMqttApi : IHostedService
             subscribeOptionsBuilder = subscribeOptionsBuilder.WithTopicFilter(filter => filter.WithTopic($"/app/device/property/{deviceSerialNumber}"));
         else
             subscribeOptionsBuilder = subscribeOptionsBuilder.WithTopicFilter(filter => filter.WithTopic($"/open/{mqttConfiguration.Username}/{deviceSerialNumber}/quota"));
-        
+
         // .WithTopicFilter(filter => filter.WithTopic($"/app/{appSession.User.Id}/{deviceSerialNumber}/thing/property/set"))
         // .WithTopicFilter(filter => filter.WithTopic($"/open/${mqttConfiguration.Username}/${deviceSerialNumber}/set"))
-        
+
         var subscribeOptions = subscribeOptionsBuilder.Build();
         await state.Client.SubscribeAsync(subscribeOptions);
     }
@@ -123,7 +123,7 @@ public class InternalMqttApi : IHostedService
                 Console.WriteLine($"⚠️ Invalid topic received: {topic}");
                 return Task.CompletedTask;
             }
-            
+
             if (!TryParse(eventArgs.ApplicationMessage.Payload, out var payload))
             {
                 Console.WriteLine($"⚠️ Binary payload received for {serialNumber}");
@@ -148,7 +148,7 @@ public class InternalMqttApi : IHostedService
                 updated = true;
             }
 
-            Console.WriteLine(updated ? $"🖥 Updated state for {serialNumber}" : $"⚠️ No devices found for update: {topic} at {DateTime.Now:hh:mm:ss} => {node}");
+            Console.WriteLine(updated ? $"🖥  Updated state for {serialNumber}" : $"⚠️ No devices found for update: {topic} at {DateTime.Now:hh:mm:ss} => {node}");
         }
         catch (Exception exception)
         {

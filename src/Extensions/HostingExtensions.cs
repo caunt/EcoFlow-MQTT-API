@@ -1,14 +1,14 @@
-using System.Diagnostics.CodeAnalysis;
 using EcoFlow.Mqtt.Api.Configuration;
 using EcoFlow.Mqtt.Api.Configuration.Authentication;
 using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics.CodeAnalysis;
 
 namespace EcoFlow.Mqtt.Api.Extensions;
 
 public static class HostingExtensions
 {
     private const string EcoFlowPrefix = "ECOFLOW_";
-    
+
     extension(IServiceCollection services)
     {
         public IServiceCollection ConfigureAnonymousHttpClient()
@@ -21,19 +21,19 @@ public static class HostingExtensions
                 });
             });
         }
-        
+
         public IServiceCollection ConfigureEcoFlowEndpoints()
         {
             return services.Configure<EcoFlowConfiguration>(configuration =>
             {
                 if (TryGetEnvironmentVariable("ECOFLOW_APP_API_URI", out var ecoFlowAppApiUri))
                     configuration.AppApiUri = new Uri(ecoFlowAppApiUri);
-    
+
                 if (TryGetEnvironmentVariable("ECOFLOW_OPEN_API_URI", out var ecoFlowOpenApiUri))
                     configuration.OpenApiUri = new Uri(ecoFlowOpenApiUri);
             });
         }
-        
+
         public IServiceCollection ConfigureEcoFlowAuthentication()
         {
             return services.Configure<EcoFlowConfiguration>(configuration =>
@@ -42,12 +42,12 @@ public static class HostingExtensions
                 const string secretKeyEnvironmentVariable = "SECRET_KEY";
                 const string usernameEnvironmentVariable = "USERNAME";
                 const string passwordEnvironmentVariable = "PASSWORD";
-    
+
                 var authentications = new List<IAuthentication>(2);
-                
+
                 if (TryGetEnvironmentVariable(accessKeyEnvironmentVariable, out var accessKey) && TryGetEnvironmentVariable(secretKeyEnvironmentVariable, out var secretKey))
                     authentications.Add(new OpenAuthentication(accessKey, secretKey));
-                
+
                 if (TryGetEnvironmentVariable(usernameEnvironmentVariable, out var username) && TryGetEnvironmentVariable(passwordEnvironmentVariable, out var password))
                     authentications.Add(new AppAuthentication(username, password));
 
@@ -59,11 +59,11 @@ public static class HostingExtensions
                 }
                 else
                 {
-                    configuration.Authentications = [..authentications];
+                    configuration.Authentications = [.. authentications];
                 }
             });
         }
-    
+
         private static bool TryGetEnvironmentVariable(string name, [MaybeNullWhen(false)] out string value)
         {
             value = Environment.GetEnvironmentVariable(EcoFlowPrefix + name);

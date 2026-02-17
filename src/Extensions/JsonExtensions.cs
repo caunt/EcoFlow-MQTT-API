@@ -11,32 +11,32 @@ public static class JsonExtensions
             switch (node)
             {
                 case JsonObject jsonObject:
-                {
-                    var properties = jsonObject
-                        .Select(property => property.Key)
-                        .ToArray();
+                    {
+                        var properties = jsonObject
+                            .Select(property => property.Key)
+                            .ToArray();
 
-                    foreach (var propertyName in properties)
-                        Sort(jsonObject[propertyName]);
+                        foreach (var propertyName in properties)
+                            Sort(jsonObject[propertyName]);
 
-                    var sortedProperties = jsonObject
-                        .OrderBy(property => property.Key, StringComparer.Ordinal)
-                        .ToArray();
+                        var sortedProperties = jsonObject
+                            .OrderBy(property => property.Key, StringComparer.Ordinal)
+                            .ToArray();
 
-                    jsonObject.Clear();
+                        jsonObject.Clear();
 
-                    foreach (var sortedProperty in sortedProperties)
-                        jsonObject[sortedProperty.Key] = sortedProperty.Value;
+                        foreach (var sortedProperty in sortedProperties)
+                            jsonObject[sortedProperty.Key] = sortedProperty.Value;
 
-                    break;
-                }
+                        break;
+                    }
                 case JsonArray jsonArray:
-                {
-                    foreach (var arrayItem in jsonArray)
-                        Sort(arrayItem);
+                    {
+                        foreach (var arrayItem in jsonArray)
+                            Sort(arrayItem);
 
-                    break;
-                }
+                        break;
+                    }
             }
         }
     }
