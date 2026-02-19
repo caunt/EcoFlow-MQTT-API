@@ -172,13 +172,21 @@ public static class ProtosReader
             }
         }
 
-        static FileDescriptorProto ParseStringBuilder(StringBuilder stringBuilder, string? fallbackPackage = null)
+        static FileDescriptorProto ParseStringBuilder(StringBuilder stringBuilder, string? typeDescriptor = null)
         {
             var latin1bytes = Encoding.Latin1.GetBytes(stringBuilder.ToString());
             var fileDescriptorProto = FileDescriptorProto.Parser.ParseFrom(latin1bytes);
 
-            if (!fileDescriptorProto.HasPackage && fallbackPackage is not null)
-                fileDescriptorProto.Package = fallbackPackage;
+            if (!fileDescriptorProto.HasPackage && typeDescriptor is not null)
+            {
+                if (typeDescriptor.EndsWith(';'))
+                    typeDescriptor = typeDescriptor[..^1];
+
+                var lastDotIndex = typeDescriptor.LastIndexOf('.');
+                typeDescriptor = lastDotIndex >= 0 ? typeDescriptor[..lastDotIndex] : typeDescriptor;
+
+                fileDescriptorProto.Package = typeDescriptor;
+            }
 
             return fileDescriptorProto;
         }
