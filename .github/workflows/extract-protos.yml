@@ -53,7 +53,10 @@ jobs:
           dotnet run --project src/EcoFlow.Proto.Exporter -i "downloads/$fileName" -o file_descriptor_set.pb
 
       - name: Generate protos from descriptor set
-        run: go run ./src/EcoFlow.Proto.Decoder file_descriptor_set.pb protos
+        run: |
+            go mod init ecoflow-proto-decoder -C src/EcoFlow.Proto.Decoder
+            go mod tidy -C src/EcoFlow.Proto.Decoder
+            go run ./src/EcoFlow.Proto.Decoder file_descriptor_set.pb protos
 
       - name: Commit protos back to current branch
         run: |
