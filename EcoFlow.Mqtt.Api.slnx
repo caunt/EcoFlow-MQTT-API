@@ -6,5 +6,4 @@
     <Project Path="src/EcoFlow.Mqtt.Api/EcoFlow.Mqtt.Api.csproj" />
     <Project Path="src/EcoFlow.Proto.Exporter/EcoFlow.Proto.Exporter.csproj" />
   </Folder>
-  <Folder Name="/src/EcoFlow.Proto.Decoder/" />
 </Solution>
