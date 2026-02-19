@@ -1,0 +1,1781 @@
+syntax = "proto3";
+
+message DevieEdevInfo {
+  optional uint32 type = 1;
+
+  optional uint32 ver = 2;
+
+  optional string sn = 3;
+
+  optional EDEV_STA dev_sta = 4;
+
+  optional int32 max_rate_pwr = 5;
+
+  optional int32 min_rate_pwr = 6;
+
+  optional float cur_pwr = 7;
+
+  optional float cur_vol = 8;
+
+  optional float cur_amp = 9;
+
+  repeated uint32 ch_num = 10;
+
+  optional float max_allow_cur = 11;
+
+  optional float min_allow_cur = 12;
+
+  optional TimeTaskItemV2 ev_time_task = 13;
+
+  optional TimeTaskItemV2 ev_follow_time_task = 14;
+
+  optional uint32 is_enable = 20;
+
+  optional uint32 is_connect = 21;
+
+  optional uint32 hw_connect = 22;
+
+  optional uint32 work_sta = 23;
+
+  optional uint32 err_code = 24;
+}
+
+message RtcHalData {
+  uint32 week = 1;
+
+  uint32 sec = 2;
+
+  uint32 min = 3;
+
+  uint32 hour = 4;
+
+  uint32 day = 5;
+
+  uint32 month = 6;
+
+  uint32 year = 7;
+}
+
+message ModelInfo {
+  string sn = 1;
+}
+
+message ErrCode {
+  repeated bytes err_code = 1;
+}
+
+message uploadMark {
+  uint32 time = 1;
+
+  uint32 index = 2;
+}
+
+message TimeTaskItemV2 {
+  uint32 task_index = 1;
+
+  bool is_cfg = 2;
+
+  bool is_enable = 3;
+
+  uint32 conflict_flag = 4;
+
+  TIME_TASK_MODE time_mode = 5;
+
+  uint32 time_param = 6;
+
+  uint32 time_table = 7;
+
+  TIME_TASK_TYPE task_type = 8;
+
+  uint32 task_param = 9;
+
+  repeated TimeTaskParamDetail task_param_detail = 10;
+}
+
+message TimeTaskItemV2List {
+  repeated TimeTaskItemV2 time_task = 1;
+}
+
+message TimeTaskParamDetail {
+  TIME_TASK_DETAIL_TYPE type = 1;
+
+  float val = 2;
+}
+
+message BackupEnergyTimeInfo {
+  uint32 charge_time = 1;
+
+  uint32 discharge_time = 2;
+}
+
+message MasterTimeInfo {
+  float grid_watt = 1;
+
+  sint32 sys_timezone = 2;
+
+  uint32 time_type = 3;
+
+  string timezone_id = 4;
+}
+
+message LoadTimeInfo {
+  repeated float hall1_watt = 1;
+
+  repeated float hall1_curr = 2;
+}
+
+message BackupTimeInfo {
+  repeated float ch_watt = 1;
+
+  uint32 backup_discharge_time = 2;
+
+  uint32 backup_charge_time = 3;
+
+  BackupEnergyTimeInfo energy_1 = 20;
+
+  BackupEnergyTimeInfo energy_2 = 21;
+
+  BackupEnergyTimeInfo energy_3 = 22;
+}
+
+message WattTimeInfo {
+  float grid_watt = 1;
+
+  repeated float ch_watt = 11;
+
+  repeated float bk_ch_pv_watt = 12;
+
+  float ch_pv_watt = 20;
+
+  float all_hall_watt = 21;
+
+  float ev_watt = 22;
+
+  repeated float grid_cur = 30;
+}
+
+message MasterVerTimeInfo {
+  uint32 app_main_ver = 1;
+
+  uint32 app_sub_ver = 2;
+
+  uint32 app_dbg_ver = 3;
+
+  uint32 app_test_ver = 4;
+}
+
+message MasterIncreInfo {
+  optional ErrCode errcode = 1;
+
+  optional uint32 grid_sta = 2;
+
+  optional uint32 grid_vol = 3;
+
+  optional uint32 master_rly1_cnt = 4;
+
+  optional uint32 master_rly2_cnt = 5;
+
+  optional uint32 master_rly3_cnt = 6;
+
+  optional uint32 master_rly4_cnt = 7;
+
+  optional uint32 master_rly_err_flg = 16;
+
+  optional float backup_vol_L1_safe_data = 30;
+
+  optional float backup_vol_L2_safe_data = 31;
+
+  optional uint32 backup_phase_diff_safe_data = 32;
+
+  optional float load_vol_L1_safe_data = 33;
+
+  optional float load_vol_L2_safe_data = 34;
+
+  optional uint32 load_phase_diff_safe_data = 35;
+
+  optional float master_vol_L1_safe_data = 36;
+
+  optional float master_vol_L2_safe_data = 37;
+
+  optional uint32 master_phase_diff_safe_data = 38;
+
+  optional uint32 sync_type = 50;
+
+  optional uint32 sync_sta = 51;
+
+  optional uint32 sync_grid_phase_type = 52;
+
+  optional uint32 sync_back_phase_type = 53;
+
+  optional uint32 sync_rate_l1 = 54;
+
+  optional uint32 sync_rate_l2 = 55;
+
+  optional int32 tar_phase = 56;
+
+  optional uint32 tar_side = 57;
+
+  optional MasterVerTimeInfo master_ver_info = 100;
+}
+
+message LoadSplitPhaseCfg {
+  optional bool link_mark = 1;
+
+  optional uint32 link_ch = 2;
+}
+
+message LoadChInfo {
+  LoadSplitPhaseCfg splitphase = 1;
+
+  optional uint32 set_amp = 2;
+
+  optional uint32 icon_num = 3;
+
+  optional string ch_name = 4;
+
+  optional uint32 load_rly_cnt = 5;
+
+  optional float history_ch_watt_max = 6;
+
+  optional LOAD_CH_STA load_sta = 7;
+
+  optional CTRL_MODE ctrl_mode = 8;
+}
+
+message LoadChSta {
+  optional LOAD_CH_STA load_sta = 1;
+
+  optional CTRL_MODE ctrl_mode = 2;
+
+  optional uint32 notice_set_time = 3;
+
+  optional bool notice_enble = 4;
+
+  optional uint32 notice_action = 5;
+
+  optional uint32 load_rly_cnt = 6;
+
+  optional float history_ch_watt_max = 7;
+
+  optional uint32 load_ch_switch_cause = 8;
+}
+
+message HallIncreInfo {
+  optional ErrCode errcode = 1;
+
+  optional ModelInfo model_info = 2;
+
+  optional uint32 mid_prority_discharge_time = 3;
+
+  optional uint32 high_prority_discharge_time = 4;
+
+  LoadChInfo ch1_info = 30;
+
+  LoadChInfo ch2_info = 31;
+
+  LoadChInfo ch3_info = 32;
+
+  LoadChInfo ch4_info = 33;
+
+  LoadChInfo ch5_info = 34;
+
+  LoadChInfo ch6_info = 35;
+
+  LoadChInfo ch7_info = 36;
+
+  LoadChInfo ch8_info = 37;
+
+  LoadChInfo ch9_info = 38;
+
+  LoadChInfo ch10_info = 39;
+
+  LoadChInfo ch11_info = 40;
+
+  LoadChInfo ch12_info = 41;
+
+  LoadChSta ch1_sta = 90;
+
+  LoadChSta ch2_sta = 91;
+
+  LoadChSta ch3_sta = 92;
+
+  LoadChSta ch4_sta = 93;
+
+  LoadChSta ch5_sta = 94;
+
+  LoadChSta ch6_sta = 95;
+
+  LoadChSta ch7_sta = 96;
+
+  LoadChSta ch8_sta = 97;
+
+  LoadChSta ch9_sta = 98;
+
+  LoadChSta ch10_sta = 99;
+
+  LoadChSta ch11_sta = 100;
+
+  LoadChSta ch12_sta = 101;
+}
+
+message LoadIncreInfo {
+  HallIncreInfo hall1_incre_info = 1;
+}
+
+message BackupEnergyIncreDevInfo {
+  ModelInfo model_info = 1;
+
+  uint32 type = 2;
+
+  uint32 full_cap = 3;
+
+  float rate_power = 4;
+}
+
+message DprsOverloadCfg {
+  float overload = 1;
+
+  float overload_time = 2;
+}
+
+message DprsOverLoadTable {
+  float acp_hw_limit_max_amp = 1;
+
+  float max_hw_limit_amp = 2;
+
+  float max_hw_limit_w = 3;
+
+  uint32 level_num = 4;
+
+  repeated DprsOverloadCfg level_pro = 5;
+
+  repeated uint32 rsv = 6;
+}
+
+message BackupEnergyIncreInfo {
+  optional BackupEnergyIncreDevInfo dev_info = 1;
+
+  optional uint32 is_enable = 2;
+
+  optional uint32 is_connect = 3;
+
+  optional uint32 is_ac_open = 4;
+
+  optional uint32 is_power_output = 5;
+
+  optional uint32 is_grid_charge = 6;
+
+  optional uint32 is_mppt_charge = 7;
+
+  optional uint32 battery_percentage = 8;
+
+  optional float output_power = 9;
+
+  optional uint32 oil_pack_num = 10;
+
+  optional uint32 mult_pack_num = 11;
+
+  optional uint32 ems_chg_flag = 12;
+
+  optional uint32 hw_connect = 13;
+
+  optional uint32 ems_bat_temp = 14;
+
+  optional uint32 lcd_input_watts = 15;
+
+  optional uint32 pv_charge_watts = 16;
+
+  optional uint32 pv_low_charge_watts = 17;
+
+  optional uint32 pv_height_charge_watts = 18;
+
+  optional uint32 error_code_num = 19;
+
+  optional uint32 charge_limit = 20;
+
+  optional uint32 supported_phases = 21;
+
+  optional uint32 pwr_l1 = 22;
+
+  optional uint32 pwr_l2 = 23;
+
+  optional uint32 cur_l1 = 24;
+
+  optional uint32 cur_l2 = 25;
+
+  optional uint32 chg_dsg_disable_flag = 26;
+
+  optional DprsOverLoadTable dprs_overload_table = 27;
+
+  optional DPU_UPGRADE_STA dpu_upgrade_flag = 28;
+
+  optional float pf_l1 = 29;
+
+  optional float pf_l2 = 30;
+}
+
+message BackupChannelInfo {
+  optional bool backup_is_ready = 1;
+
+  optional BACKUP_CH_STA ctrl_sta = 2;
+
+  optional FORCE_CHARGE_STA force_charge_sta = 3;
+
+  optional uint32 backup_rly1_cnt = 4;
+
+  optional uint32 backup_rly2_cnt = 5;
+
+  optional uint32 wake_up_charge_sta = 6;
+
+  optional uint32 energy_5p8_type = 7;
+}
+
+message ProBackupEnergyIncreInfo {
+  optional ModelInfo model_info = 1;
+
+  optional uint32 is_connect = 2;
+
+  optional uint32 battery_soc = 3;
+
+  optional uint32 full_cap = 4;
+
+  optional float rate_power = 5;
+
+  optional uint32 is_ac_open = 6;
+
+  optional float output_power = 7;
+
+  optional uint32 ems_bat_temp = 8;
+
+  optional uint32 lcd_input_watts = 9;
+
+  optional uint32 pv_insert_state = 10;
+
+  optional uint32 pv_low_charge_watts = 11;
+
+  optional uint32 charge_time = 12;
+
+  optional uint32 discharge_time = 13;
+
+  optional uint32 error_code_num = 14;
+
+  optional uint32 chg_dsg_disable_flag = 15;
+}
+
+message BackupIncreInfo {
+  optional ErrCode errcode = 1;
+
+  optional uint32 backup_full_cap = 2;
+
+  optional uint32 backup_bat_per = 3;
+
+  optional float backup_discharge_rmain_bat_cap = 4;
+
+  optional float cur_discharge_soc = 5;
+
+  optional uint32 backup_box_type = 6;
+
+  BackupChannelInfo ch1_info = 60;
+
+  BackupChannelInfo ch2_info = 61;
+
+  BackupChannelInfo ch3_info = 62;
+
+  BackupEnergyIncreInfo Energy1_info = 80;
+
+  BackupEnergyIncreInfo Energy2_info = 81;
+
+  BackupEnergyIncreInfo Energy3_info = 82;
+
+  ProBackupEnergyIncreInfo Delta_pro1_info = 90;
+
+  ProBackupEnergyIncreInfo Delta_pro2_info = 91;
+
+  DevieEdevInfo edev1_info = 100;
+
+  DevieEdevInfo edev2_info = 101;
+
+  DevieEdevInfo edev3_info = 102;
+}
+
+message StrategyChInfo {
+  bool load_is_enable = 1;
+
+  uint32 load_priority = 2;
+
+  uint32 load_priority_type = 3;
+}
+
+message EmergencyStrategy {
+  uint32 is_cfg = 1;
+
+  uint32 backup_mode = 2;
+
+  uint32 overload_mode = 3;
+
+  uint32 mid_priority_ch_discharge_low = 4;
+
+  repeated StrategyChInfo hall1_ch_info = 5;
+
+  bool is_enable = 7;
+}
+
+message TimeRangeStrategy {
+  bool is_cfg = 1;
+
+  bool is_enable = 2;
+
+  STRATEGY_TIME_MODE time_mode = 3;
+
+  uint32 time_data = 4;
+
+  RtcHalData start_time = 5;
+
+  RtcHalData stop_time = 6;
+}
+
+message TimeScaleSta {
+  repeated bytes sta = 1;
+}
+
+message TimeTaskComCfg {
+  bool is_cfg = 1;
+
+  bool is_enable = 2;
+
+  TIME_TASK_TYPE_LIST type = 3;
+
+  RtcHalData set_time = 4;
+
+  TimeRangeStrategy time_range = 5;
+
+  TimeScaleSta time_scale = 6;
+}
+
+message BackupChargeCfg {
+  bool is_allow = 1;
+
+  uint32 charge_watt = 2;
+
+  uint32 low_soc = 3;
+
+  uint32 hight_soc = 4;
+
+  uint32 backup_reserve_enable = 5;
+
+  uint32 backup_reserve_soc = 6;
+}
+
+message BackupEvCtrlInfo {
+  optional EV_CHG_CTRL ch_ctrl = 1;
+
+  optional uint32 cfg_cur = 2;
+
+  optional EDEV_MODE cfg_ev_mode = 3;
+
+  optional EV_CHG_CTRL ev_force_chg_is_allow = 4;
+
+  optional uint32 charge_suspend_reason = 5;
+}
+
+message BackupDischargeCfg {
+  bool is_allow = 1;
+
+  uint32 discharge_watt = 2;
+
+  uint32 low_soc = 3;
+
+  uint32 backup_soc = 4;
+}
+
+message ChargeTimeCfg {
+  uint32 ch_charge_watt = 1;
+
+  uint32 low_battery = 2;
+
+  uint32 hight_battery = 3;
+
+  repeated StrategyChInfo backup_ch_info = 4;
+}
+
+message DischargeTimeCfg {
+  uint32 mid_priority_ch_discharge_low = 1;
+
+  repeated StrategyChInfo hall1_ch_info = 2;
+}
+
+message TimeTaskCfg {
+  TimeTaskComCfg com_cfg = 1;
+
+  oneof type {
+    ChargeTimeCfg charge_cfg = 2;
+
+    DischargeTimeCfg discharge_cfg = 3;
+  }
+}
+
+message ProtoTime {
+  optional MasterTimeInfo master_info = 1;
+
+  optional LoadTimeInfo load_info = 2;
+
+  optional BackupTimeInfo backup_info = 3;
+
+  optional WattTimeInfo watt_info = 4;
+
+  optional MasterVerTimeInfo master_ver_info = 5;
+
+  optional uploadMark upload_mark = 200;
+}
+
+message SysEventRecordItem {
+  optional uint32 sys_ms = 1;
+
+  optional uint32 timestamp = 2;
+
+  optional uint32 event_no = 3;
+
+  optional uint32 dur_time = 4;
+}
+
+message SysEventRecordReport {
+  optional uint32 event_seq = 1;
+
+  repeated SysEventRecordItem event_report = 2;
+}
+
+message SysEventInfoReportAck {
+  optional uint32 event_seq = 1;
+
+  optional uint32 event_item_num = 2;
+}
+
+message TouData {
+  repeated bytes tou_char_dischar_data = 1;
+}
+
+message ProtoPushAndSet {
+  optional uint32 grid_vol = 1;
+
+  optional uint32 grid_freq = 2;
+
+  optional PRODUCT_TYPE product_tpye = 3;
+
+  optional bool eps_mode_info = 5;
+
+  optional uint32 foce_charge_hight = 6;
+
+  optional uint32 charge_watt_power = 7;
+
+  optional uint32 disc_lower = 8;
+
+  optional POWER_STA power_sta = 9;
+
+  optional uint32 master_cur = 10;
+
+  optional bool is_set_oil_engine = 11;
+
+  optional uint32 oil_engine_watt = 12;
+
+  optional bool is_get_cfg_flag = 14;
+
+  optional bool has_config_done = 15;
+
+  optional bool is_area_err = 16;
+
+  optional string area = 17;
+
+  optional FORCE_CHARGE_STA ch1_force_charge = 18;
+
+  optional FORCE_CHARGE_STA ch2_force_charge = 19;
+
+  optional FORCE_CHARGE_STA ch3_force_charge = 20;
+
+  optional bool storm_is_enable = 21;
+
+  optional uint32 storm_end_timestamp = 22;
+
+  optional bool in_storm_mode = 23;
+
+  optional uint32 ch1_enable_set = 24;
+
+  optional uint32 ch2_enable_set = 25;
+
+  optional uint32 ch3_enable_set = 26;
+
+  optional uint32 oil_engine_to_back_charge_persent = 27;
+
+  optional uint32 clear_ntc_over_temp_err = 28;
+
+  optional EmergencyStrategy LoadStrategyCfg = 30;
+
+  optional TimeTaskCfg TimeTaskCfg_1 = 31;
+
+  optional TimeTaskCfg TimeTaskCfg_2 = 32;
+
+  optional TimeTaskCfg TimeTaskCfg_3 = 33;
+
+  optional TimeTaskCfg TimeTaskCfg_4 = 34;
+
+  optional TimeTaskCfg TimeTaskCfg_5 = 35;
+
+  optional TimeTaskCfg TimeTaskCfg_6 = 36;
+
+  optional TimeTaskCfg TimeTaskCfg_7 = 37;
+
+  optional TimeTaskCfg TimeTaskCfg_8 = 38;
+
+  optional TimeTaskCfg TimeTaskCfg_9 = 39;
+
+  optional TimeTaskCfg TimeTaskCfg_10 = 40;
+
+  optional uint32 ntc_over_temp_err = 41;
+
+  optional uint32 time_task_cnt = 42;
+
+  optional uint32 smart_backup_mode = 61;
+
+  optional uint32 backup_reserve_enable = 62;
+
+  optional uint32 backup_reserve_soc = 63;
+
+  optional uint32 localTime = 64;
+
+  optional TouData toudata = 65;
+
+  optional float time_zone = 66;
+
+  optional uint32 solar_backup_reserve_soc = 67;
+
+  optional uint32 oil_type = 70;
+
+  optional uint32 oil_max_output_watt = 71;
+
+  BackupIncreInfo backup_incre_info = 80;
+
+  LoadIncreInfo load_incre_info = 81;
+
+  MasterIncreInfo master_incre_info = 82;
+
+  optional uint32 storm_request_flag = 90;
+
+  optional uint32 storm_cur_time_stop_flag = 91;
+
+  optional uint32 sys_cur_running_state = 92;
+
+  optional uint32 rly1_real_sta = 93;
+
+  optional uint32 rly2_real_sta = 94;
+
+  optional uint32 rly3_real_sta = 95;
+
+  optional uint32 rly4_real_sta = 96;
+
+  optional uint32 cur_running_strategy = 97;
+
+  optional uint32 reason_of_stop_dischar = 98;
+
+  optional uint32 reason_os_stop_charge = 99;
+
+  optional uint32 inlet_box_current = 100;
+
+  optional uint32 reason_of_stop_dischar_ack = 101;
+
+  optional uint32 reason_os_stop_charge_ack = 102;
+
+  optional uint32 reconfig_flag = 103;
+
+  optional uint32 phase_sub_value = 104;
+
+  optional uint32 req_clear_data = 110;
+
+  optional uint32 ack_clear_data = 111;
+
+  optional uint32 clear_data_fail_sta = 112;
+
+  optional uploadMark upload_mark = 200;
+}
+
+message BackupProtoTime {
+  optional BackupTimeInfo backup_info = 1;
+}
+
+message LoadSafeDataTime {
+  float load_vol_L1_time = 1;
+
+  float load_vol_L2_time = 2;
+
+  uint32 load_phase_diff_time = 3;
+}
+
+message LoadProtoTime {
+  optional LoadTimeInfo load_info = 1;
+
+  optional LoadSafeDataTime load_safe_time = 2;
+}
+
+message ConfigWrite {
+  optional uint32 cfg_ev_chg_amp_max = 35;
+
+  optional EV_CHG_MODE cfg_ev_chg_mode = 36;
+
+  optional uint32 cfg_ev_chg_soc_min = 37;
+
+  optional uint32 cfg_ev_chg_manual_ctrl = 38;
+
+  optional ECO_MODE cfg_ev_eco_mode = 39;
+
+  optional int32 cfg_display_property_full_upload_period = 67;
+
+  optional int32 cfg_display_property_incremental_upload_period = 68;
+
+  optional int32 cfg_runtime_property_full_upload_period = 69;
+
+  optional int32 cfg_runtime_property_incremental_upload_period = 70;
+
+  optional bool active_display_property_full_upload = 71;
+
+  optional bool active_runtime_property_full_upload = 72;
+
+  optional TimeTaskItemV2 cfg_time_task_v2_item = 127;
+
+  optional uint32 active_selected_time_task_v2 = 128;
+}
+
+message ConfigWriteAck {
+  uint32 action_id = 1;
+
+  bool config_ok = 2;
+
+  optional int32 cfg_display_property_full_upload_period = 67;
+
+  optional int32 cfg_display_property_incremental_upload_period = 68;
+
+  optional int32 cfg_runtime_property_full_upload_period = 69;
+
+  optional int32 cfg_runtime_property_incremental_upload_period = 70;
+
+  optional bool active_display_property_full_upload = 71;
+
+  optional bool active_runtime_property_full_upload = 72;
+
+  optional TimeTaskItemV2 cfg_time_task_v2_item = 127;
+
+  optional uint32 active_selected_time_task_v2 = 128;
+}
+
+message LoadHeartBeatTime {
+  optional uint32 time_stamp = 1;
+}
+
+message BackHeartTime {
+  optional uint32 time_stamp = 1;
+}
+
+message MasterToBackHeartBeatTime {
+  optional uint32 time_stamp = 1;
+
+  optional GRID_STATUS grid_status = 2;
+
+  optional uint32 error_state = 3;
+
+  optional uint32 phase_sub_value = 4;
+}
+
+message MasterToLoadHeartTime {
+  optional uint32 time_stamp = 1;
+}
+
+message MasterToBackProtoPushAndSet {
+  optional uint32 grid_vol = 1;
+
+  optional uint32 grid_freq = 2;
+
+  optional bool stop_key_status = 3;
+
+  optional GRID_STATUS grid_status = 4;
+
+  optional bool is_area_err = 5;
+
+  optional uint32 master_to_back_time_stamp = 6;
+
+  optional bool is_get_backup_info = 7;
+
+  optional uint32 open_door_flag = 8;
+
+  optional uint32 overall_err_sta = 9;
+
+  optional BackupChargeCfg ch1_charge_cfg = 10;
+
+  optional BackupChargeCfg ch2_charge_cfg = 11;
+
+  optional BackupChargeCfg ch3_charge_cfg = 12;
+
+  optional uint32 ch1_enable_set = 13;
+
+  optional uint32 ch2_enable_set = 14;
+
+  optional uint32 ch3_enable_set = 15;
+
+  optional uint32 mc_running_mode = 16;
+
+  BackupEvCtrlInfo ch1_ev_ctrl = 17;
+
+  BackupEvCtrlInfo ch2_ev_ctrl = 18;
+
+  BackupEvCtrlInfo ch3_ev_ctrl = 19;
+
+  optional BackupDischargeCfg ch1_discharge_cfg = 30;
+
+  optional BackupDischargeCfg ch2_discharge_cfg = 31;
+
+  optional BackupDischargeCfg ch3_discharge_cfg = 32;
+
+  optional float overall_load_pwr = 33;
+
+  optional float overall_load_pwr_L2 = 34;
+
+  optional DISCHARGE_CTRL_MODE backup_discharge_ctrl = 35;
+
+  optional FORCE_CHARGE_STA ch1_force_charge = 50;
+
+  optional FORCE_CHARGE_STA ch2_force_charge = 51;
+
+  optional FORCE_CHARGE_STA ch3_force_charge = 52;
+
+  optional ModelInfo mc_model_info = 70;
+
+  optional bool request_backup_full_info = 71;
+
+  optional UPGRADING_STATUS mc_is_upgrading = 72;
+}
+
+message BackToMasterProtoPush {
+  optional uint32 max_power = 1;
+
+  optional uint32 output_power = 2;
+
+  BackupIncreInfo backup_incre_info = 3;
+
+  optional BACKUP_CH_STA backup_sys_sta = 4;
+
+  optional uint32 back_to_master_time_stamp = 5;
+
+  optional bool get_master_init_sta = 6;
+
+  optional float backup_vol_L1 = 7;
+
+  optional float backup_vol_L2 = 8;
+
+  optional float backup_watt_L1 = 9;
+
+  optional float backup_watt_L2 = 10;
+
+  optional uint32 backup_phase_diff = 11;
+
+  optional float ch1_vol_L1 = 12;
+
+  optional float ch1_vol_L2 = 13;
+
+  optional float ch2_vol_L1 = 14;
+
+  optional float ch2_vol_L2 = 15;
+
+  optional float ch3_vol_L1 = 16;
+
+  optional float ch3_vol_L2 = 17;
+
+  optional uint32 discharge_AC_out_sta = 20;
+
+  optional uint32 rly_s3_sta = 21;
+
+  optional uint32 dev_charge_err_sta = 22;
+}
+
+message MasterToLoadInfo {
+  LoadChInfo ch1_info = 30;
+
+  LoadChInfo ch2_info = 31;
+
+  LoadChInfo ch3_info = 32;
+
+  LoadChInfo ch4_info = 33;
+
+  LoadChInfo ch5_info = 34;
+
+  LoadChInfo ch6_info = 35;
+
+  LoadChInfo ch7_info = 36;
+
+  LoadChInfo ch8_info = 37;
+
+  LoadChInfo ch9_info = 38;
+
+  LoadChInfo ch10_info = 39;
+
+  LoadChInfo ch11_info = 40;
+
+  LoadChInfo ch12_info = 41;
+
+  LoadChSta ch1_sta = 90;
+
+  LoadChSta ch2_sta = 91;
+
+  LoadChSta ch3_sta = 92;
+
+  LoadChSta ch4_sta = 93;
+
+  LoadChSta ch5_sta = 94;
+
+  LoadChSta ch6_sta = 95;
+
+  LoadChSta ch7_sta = 96;
+
+  LoadChSta ch8_sta = 97;
+
+  LoadChSta ch9_sta = 98;
+
+  LoadChSta ch10_sta = 99;
+
+  LoadChSta ch11_sta = 100;
+
+  LoadChSta ch12_sta = 101;
+
+  optional StrategyChInfo ch1_stra_info = 160;
+
+  optional StrategyChInfo ch2_stra_info = 161;
+
+  optional StrategyChInfo ch3_stra_info = 162;
+
+  optional StrategyChInfo ch4_stra_info = 163;
+
+  optional StrategyChInfo ch5_stra_info = 164;
+
+  optional StrategyChInfo ch6_stra_info = 165;
+
+  optional StrategyChInfo ch7_stra_info = 166;
+
+  optional StrategyChInfo ch8_stra_info = 167;
+
+  optional StrategyChInfo ch9_stra_info = 168;
+
+  optional StrategyChInfo ch10_stra_info = 169;
+
+  optional StrategyChInfo ch11_stra_info = 170;
+
+  optional StrategyChInfo ch12_stra_info = 171;
+
+  optional StrategyChInfo ch1_oil_info = 210;
+
+  optional StrategyChInfo ch2_oil_info = 211;
+
+  optional StrategyChInfo ch3_oil_info = 212;
+
+  optional StrategyChInfo ch4_oil_info = 213;
+
+  optional StrategyChInfo ch5_oil_info = 214;
+
+  optional StrategyChInfo ch6_oil_info = 215;
+
+  optional StrategyChInfo ch7_oil_info = 216;
+
+  optional StrategyChInfo ch8_oil_info = 217;
+
+  optional StrategyChInfo ch9_oil_info = 218;
+
+  optional StrategyChInfo ch10_oil_info = 219;
+
+  optional StrategyChInfo ch11_oil_info = 220;
+
+  optional StrategyChInfo ch12_oil_info = 221;
+}
+
+message MasterToLoadProtoPushAndSet {
+  optional uint32 max_power = 1;
+
+  optional uint32 output_power = 2;
+
+  optional bool stop_key_statu = 3;
+
+  optional POWER_STA power_sta = 4;
+
+  optional uint32 master_to_load_time_stamp = 5;
+
+  optional bool get_load_init_sta = 6;
+
+  optional uint32 grid_vol = 7;
+
+  optional uint32 grid_freq = 8;
+
+  optional float backup_discharge_rmain_bat_cap = 9;
+
+  optional uint32 mid_priority_ch_discharge_low = 10;
+
+  optional float cur_discharge_soc = 11;
+
+  optional float ntc_value_1 = 12;
+
+  optional float ntc_value_2 = 13;
+
+  optional uint32 oil_output_max_power = 14;
+
+  optional OIL_POWER_STA oil_power_sta = 15;
+
+  MasterToLoadInfo hall1_incre_info = 30;
+}
+
+message LoadtToMasterInfo {
+  optional ErrCode errcode = 1;
+
+  optional ModelInfo model_info = 2;
+
+  optional uint32 board_ntc_temp = 3;
+
+  optional uint32 load_to_master_time_stamp = 4;
+
+  optional bool is_get_master_info = 5;
+
+  optional uint32 mid_prority_discharge_time = 6;
+
+  optional uint32 high_prority_discharge_time = 7;
+
+  optional uint32 all_load_ch_close_flag = 8;
+
+  LoadChSta load_ch1_sta = 20;
+
+  LoadChSta load_ch2_sta = 21;
+
+  LoadChSta load_ch3_sta = 22;
+
+  LoadChSta load_ch4_sta = 23;
+
+  LoadChSta load_ch5_sta = 24;
+
+  LoadChSta load_ch6_sta = 25;
+
+  LoadChSta load_ch7_sta = 26;
+
+  LoadChSta load_ch8_sta = 27;
+
+  LoadChSta load_ch9_sta = 28;
+
+  LoadChSta load_ch10_sta = 29;
+
+  LoadChSta load_ch11_sta = 30;
+
+  LoadChSta load_ch12_sta = 31;
+}
+
+message LoadtToMasterProtoPushAndSet {
+  LoadtToMasterInfo load_to_master_info1 = 30;
+
+  optional float load_vol_L1 = 33;
+
+  optional float load_vol_L2 = 34;
+
+  optional uint32 load_phase_diff = 35;
+}
+
+message LoadtToBackupProtoPushAndSet {
+  optional float L1_watt = 1;
+
+  optional float L2_watt = 2;
+
+  optional float L1_watt_home = 3;
+
+  optional float L2_watt_home = 4;
+
+  optional float L1_watt_s = 10;
+
+  optional float L2_watt_s = 11;
+}
+
+message ChInfo {
+  uint32 ch_watt = 1;
+
+  uint32 load_priority = 2;
+}
+
+message BroadCastLoadInfo {
+  uint32 can_adrr = 1;
+
+  repeated ChInfo ch_info = 2;
+}
+
+message sys_info_param_save {
+  optional uint32 grid_vol = 1;
+
+  optional uint32 grid_freq = 2;
+
+  optional PRODUCT_TYPE product_tpye = 3;
+
+  optional bool eps_mode_info = 4;
+
+  optional uint32 foce_charge_hight = 5;
+
+  optional uint32 charge_watt_power = 6;
+
+  optional uint32 disc_lower = 7;
+
+  optional bool is_set_oil_engine = 8;
+
+  optional uint32 oil_engine_watt = 9;
+
+  optional uint32 master_cur = 10;
+
+  optional bool has_config_done = 11;
+
+  optional string area = 12;
+
+  optional bool storm_is_enable = 21;
+
+  optional uint32 storm_end_timestamp = 22;
+
+  optional bool in_storm_mode = 23;
+
+  optional uint32 mid_priority_ch_discharge_low = 24;
+
+  optional uint32 oil_engine_to_back_charge_persent = 28;
+
+  optional uint32 ntc_over_temp_err = 29;
+
+  optional uint32 master_rly1_cnt = 13;
+
+  optional uint32 master_rly2_cnt = 14;
+
+  optional uint32 master_rly3_cnt = 15;
+
+  optional uint32 master_rly4_cnt = 16;
+
+  optional float g_i_coeff = 30;
+
+  optional float g_i_offset = 31;
+
+  optional float g_p_coeff = 32;
+
+  optional float g_p_offset = 33;
+
+  optional float g_p_coeff_1 = 34;
+
+  optional float g_p_offset_1 = 35;
+
+  optional float g_p_coeff_2 = 36;
+
+  optional float g_p_offset_2 = 37;
+
+  optional float g_p_coeff_1_2 = 38;
+
+  optional float g_p_offset_1_2 = 39;
+
+  optional uint32 smart_backup_mode = 61;
+
+  optional uint32 backup_reserve_enable = 62;
+
+  optional uint32 backup_reserve_soc = 63;
+
+  optional uint32 solar_backup_reserve_soc = 64;
+
+  optional uint32 oil_type = 70;
+
+  optional uint32 oil_max_output_watt = 71;
+
+  optional uint32 storm_cur_time_stop_flag = 80;
+
+  sint32 sys_timezone = 90;
+
+  uint32 time_type = 91;
+
+  string timezone_id = 92;
+
+  uint32 update_flag = 93;
+
+  optional uint32 inlet_box_current = 94;
+
+  optional uint32 phase_sub_value = 95;
+
+  optional uint32 ack_clear_data = 96;
+
+  optional uint32 ev_chg_amp_max = 97;
+
+  optional EV_CHG_MODE ev_chg_mode = 98;
+
+  optional uint32 ev_chg_soc_min = 100;
+
+  optional uint32 ev_chg_manual_ctrl = 101;
+
+  optional ECO_MODE ev_eco_mode = 102;
+}
+
+message strategy_param_save {
+  optional EmergencyStrategy LoadStrategyCfg = 30;
+
+  optional TimeTaskCfg TimeTaskCfg_1 = 31;
+
+  optional TimeTaskCfg TimeTaskCfg_2 = 32;
+
+  optional TimeTaskCfg TimeTaskCfg_3 = 33;
+
+  optional TimeTaskCfg TimeTaskCfg_4 = 34;
+
+  optional TimeTaskCfg TimeTaskCfg_5 = 35;
+
+  optional TimeTaskCfg TimeTaskCfg_6 = 36;
+
+  optional TimeTaskCfg TimeTaskCfg_7 = 37;
+
+  optional TimeTaskCfg TimeTaskCfg_8 = 38;
+
+  optional TimeTaskCfg TimeTaskCfg_9 = 39;
+
+  optional TimeTaskCfg TimeTaskCfg_10 = 40;
+
+  optional TimeTaskItemV2List BranchTimeTask = 41;
+
+  optional TimeTaskItemV2 EvTimeTask = 42;
+}
+
+message hall_param {
+  LoadChInfo ch1_info = 30;
+
+  LoadChInfo ch2_info = 31;
+
+  LoadChInfo ch3_info = 32;
+
+  LoadChInfo ch4_info = 33;
+
+  LoadChInfo ch5_info = 34;
+
+  LoadChInfo ch6_info = 35;
+
+  LoadChInfo ch7_info = 36;
+
+  LoadChInfo ch8_info = 37;
+
+  LoadChInfo ch9_info = 38;
+
+  LoadChInfo ch10_info = 39;
+
+  LoadChInfo ch11_info = 40;
+
+  LoadChInfo ch12_info = 41;
+}
+
+message load_ch_watt_rec {
+  optional uint32 ch_watt_wek_day_idx = 1;
+
+  optional float ch_watt_day_1 = 2;
+
+  optional float ch_watt_day_2 = 3;
+
+  optional float ch_watt_day_3 = 4;
+
+  optional float ch_watt_day_4 = 5;
+
+  optional float ch_watt_day_5 = 6;
+
+  optional float ch_watt_day_6 = 7;
+
+  optional float ch_watt_day_7 = 8;
+}
+
+message load_hall_watt_rec {
+  load_ch_watt_rec ch1_watt_info = 30;
+
+  load_ch_watt_rec ch2_watt_info = 31;
+
+  load_ch_watt_rec ch3_watt_info = 32;
+
+  load_ch_watt_rec ch4_watt_info = 33;
+
+  load_ch_watt_rec ch5_watt_info = 34;
+
+  load_ch_watt_rec ch6_watt_info = 35;
+
+  load_ch_watt_rec ch7_watt_info = 36;
+
+  load_ch_watt_rec ch8_watt_info = 37;
+
+  load_ch_watt_rec ch9_watt_info = 38;
+
+  load_ch_watt_rec ch10_watt_info = 39;
+
+  load_ch_watt_rec ch11_watt_info = 40;
+
+  load_ch_watt_rec ch12_watt_info = 41;
+}
+
+message load_param_save {
+  hall_param hall1_param = 1;
+
+  optional uint32 grid_freq = 2;
+
+  load_hall_watt_rec hall1_watt_rec = 10;
+}
+
+message backup_chanel_info {
+  optional uint32 backup_rly1_cnt = 1;
+
+  optional uint32 backup_rly2_cnt = 2;
+
+  optional uint32 backup_ch_hand_enable_sta = 3;
+
+  optional uint32 backup_ch_dev_type = 4;
+}
+
+message backup_param_save {
+  optional uint32 grid_vol = 1;
+
+  optional uint32 grid_freq = 2;
+
+  backup_chanel_info backup_chanel1_info = 3;
+
+  backup_chanel_info backup_chanel2_info = 4;
+
+  backup_chanel_info backup_chanel3_info = 5;
+
+  optional uint32 phase_diff = 6;
+
+  optional DISCHARGE_CTRL_MODE backup_discharge_ctrl = 7;
+
+  optional BackupDischargeCfg ch1_discharge_cfg = 30;
+
+  optional BackupDischargeCfg ch2_discharge_cfg = 31;
+
+  optional BackupDischargeCfg ch3_discharge_cfg = 32;
+}
+
+message StatisticsItem {
+  uint32 timestamp = 1;
+
+  uint32 time_type = 2;
+
+  uint32 data_type = 3;
+
+  repeated sint32 data = 4;
+}
+
+message StatisticsTotalReport {
+  uint32 item_seq = 1;
+
+  repeated StatisticsItem item_data = 2;
+}
+
+message StatisticsTotalReportAck {
+  uint32 result = 1;
+
+  uint32 item_seq = 2;
+
+  uint32 time_type = 3;
+
+  uint32 data_type = 4;
+}
+
+message StatisticsRptCtrlSet {
+  uint32 time_type = 1;
+
+  uint32 data_type = 2;
+
+  uint32 sys_rate_ctrl_time = 3;
+}
+
+message StatisticsRptCtrlSetAck {
+  uint32 result = 1;
+
+  uint32 time_type = 2;
+
+  uint32 data_type = 3;
+}
+
+message ConfigRead {
+  repeated uint32 action_id = 1;
+}
+
+message ConfigReadAck {
+  optional TimeTaskItemV2List read_time_task_v2_list = 129;
+}
+
+message DisplayPropertyUpload {
+  optional uint32 ev_chg_amp_max = 538;
+
+  optional EV_CHG_MODE ev_chg_mode = 539;
+
+  optional uint32 ev_chg_soc_min = 540;
+
+  optional uint32 ev_chg_manual_ctrl = 541;
+
+  optional ECO_MODE ev_eco_mode = 542;
+}
+
+enum POWER_STA {
+  LOAD_CH_EG_POWER = 0;
+
+  LOAD_CH_ES_POWER = 1;
+
+  LOAD_CH_OIL_POWER = 2;
+
+  LOAD_CH_STOP_EM = 3;
+
+  LOAD_CH_OFF_POWER = 4;
+}
+
+enum LOAD_CH_STA {
+  LOAD_CH_POWER_OFF = 0;
+
+  LOAD_CH_POWER_ON = 1;
+
+  LOAD_CH_EM_STOP = 2;
+
+  LOAD_CH_UNKNOWN_STA = 4;
+}
+
+enum BACKUP_CH_STA {
+  BACKUP_CH_OFF = 0;
+
+  BACKUP_CH_DISCHARGE = 1;
+
+  BACKUP_CH_CHARGE = 2;
+
+  BACKUP_CH_EM_STOP = 3;
+
+  BACKUP_CH_STANDBY = 4;
+}
+
+enum CTRL_MODE {
+  RLY_AUTO_CTRL_MODE = 0;
+
+  RLY_HAND_CTRL_MODE = 1;
+
+  RLY_FAILURE_CTRL_MODE = 2;
+}
+
+enum FORCE_CHARGE_STA {
+  FORCE_CHARGE_OFF = 0;
+
+  FORCE_CHARGE_ON = 1;
+}
+
+enum FORCE_CHARGE_ALLOW_STA {
+  FORCE_CHARGE_FORBID = 0;
+
+  FORCE_CHARGE_ALLOW = 1;
+}
+
+enum PRODUCT_TYPE {
+  GRID_OFF_LOAD12 = 0;
+
+  GRID_CONNECTED_LOAD12 = 1;
+
+  GRID_OFF_LOAD36 = 2;
+
+  GRID_CONNECTED_LOAD36 = 3;
+}
+
+enum PRODUCT_MODE {
+  GRID_OFF_MODE = 0;
+
+  GRID_CONNECTED_MODE = 1;
+}
+
+enum GRID_STATUS {
+  GRID_ON_STA = 0;
+
+  GRID_OFF_STA = 1;
+
+  GRID_PHASE_ERR_STA = 2;
+
+  GRID_VOLT_ERR_STA = 3;
+
+  GRID_FREQ_ERR_STA = 4;
+
+  NONE_STA = 5;
+}
+
+enum UPGRADING_STATUS {
+  UPGRADING_UNKNOWN_STA = 0;
+
+  UPGRADING_ONGOING = 1;
+
+  UPGRADING_OUT = 2;
+}
+
+enum DISCHARGE_CTRL_MODE {
+  DISCHARGE_NONE_MODE = 0;
+
+  DISCHARGE_AUTO_MODE = 1;
+
+  DISCHARGE_MASTER_MODE = 2;
+}
+
+enum OIL_POWER_STA {
+  LOAD_CH_NOT_OIL_POWER = 0;
+
+  LOAD_CH_SP_OIL_POWER = 1;
+
+  LOAD_CH_OP_OIL_L1_POWER = 2;
+
+  LOAD_CH_P_OIL_L2_POWER = 3;
+}
+
+enum EV_CHG_MODE {
+  EV_CHG_MODE_NULL = 0;
+
+  EV_CHG_MODE_REDUNDANCY_PV = 1;
+
+  EV_CHG_MODE_ENERGY_SAVE = 2;
+
+  EV_CHG_MODE_PLUG_PLAY = 3;
+
+  EV_CHG_MODE_FOLLOW_SYS = 4;
+}
+
+enum ECO_MODE {
+  ECO_NONE = 0;
+
+  ECO_FOLLOW = 1;
+
+  ECO_TIME = 2;
+}
+
+enum EV_CHG_CTRL {
+  EV_CHG_CTRL_OFF = 0;
+
+  EV_CHG_CTRL_ON = 1;
+
+  EV_CHG_CTRL_MAX = 2;
+}
+
+enum DPU_UPGRADE_STA {
+  DPU_UPGRADE_NONE = 0;
+
+  DPU_UPGRADING = 1;
+}
+
+enum EDEV_STA {
+  EDEV_EV_PRE = 0;
+
+  EDEV_EV_RUN = 1;
+
+  EDEV_EV_STOP = 2;
+
+  EDEV_EV_ERR = 3;
+
+  EDEV_NO_PLUG = 4;
+}
+
+enum EDEV_MODE {
+  MODE_EV_NULL = 0;
+
+  MODE_REDUNDANCY_PV = 1;
+
+  MODE_ENERGY_SAVE = 2;
+
+  MODE_PLUG_PLAY = 3;
+}
+
+enum STRATEGY_TIME_MODE {
+  STARTEGY_EVERY_DAY = 0;
+
+  STARTEGY_EVERY_WEEK = 1;
+
+  STARTEGY_EVERY_MONTH = 2;
+
+  STARTEGY_SPECIFY_DATE = 3;
+}
+
+enum TIME_TASK_TYPE_LIST {
+  NONE_TIME_TASK = 0;
+
+  CHARGE_TIME_TASK = 1;
+
+  DISCHARGE_TIME_TASK = 2;
+}
+
+enum TIME_TASK_MODE {
+  TIME_TASK_MODE_RESV = 0;
+
+  TIME_TASK_MODE_PER_WEEK = 1;
+
+  TIME_TASK_MODE_ONCE = 2;
+}
+
+enum TIME_TASK_TYPE {
+  TIME_TASK_TYPE_AC_CHG = 0;
+
+  TIME_TASK_TYPE_AC_DSG = 1;
+
+  TIME_TASK_TYPE_AC2_DSG = 2;
+
+  TIME_TASK_TYPE_DC_CHG = 3;
+
+  TIME_TASK_TYPE_DC2_CHG = 4;
+
+  TIME_TASK_TYPE_DC_DSG = 5;
+
+  TIME_TASK_TYPE_OIL_ON = 6;
+
+  TIME_TASK_TYPE_OIL_OFF = 7;
+
+  TIME_TASK_TYPE_USB_CHG = 8;
+
+  TIME_TASK_TYPE_USB_DSG = 9;
+
+  TIME_TASK_TYPE_AC_BYPASS = 10;
+
+  TIME_TASK_TYPE_AC_DSG_ONLY = 11;
+
+  TIME_TASK_TYPE_SHARING_SOC = 12;
+
+  TIME_TASK_TYPE_POWER_ON = 13;
+
+  TIME_TASK_TYPE_POWER_OFF = 14;
+
+  TIME_TASK_TYPE_THERMOSTATIC = 15;
+
+  TIME_TASK_TYPE_COOLING = 16;
+
+  TIME_TASK_TYPE_HEATING = 17;
+
+  TIME_TASK_TYPE_VENTING = 18;
+
+  TIME_TASK_TYPE_DEHUMIDIFYING = 19;
+
+  TIME_TASK_TYPE_LOAD_CTRL_OFF = 20;
+
+  TIME_TASK_TYPE_LOAD_CTRL_ON = 21;
+
+  TIME_TASK_TYPE_LOAD_CTRL_GRID = 22;
+
+  TIME_TASK_TYPE_LOAD_CTRL_BACKUP = 23;
+
+  TIME_TASK_TYPE_AC_DSG_SELF = 24;
+
+  TIME_TASK_TYPE_EV_CHG = 25;
+}
+
+enum TIME_TASK_DETAIL_TYPE {
+  TIME_TASK_DETAIL_IDLE = 0;
+
+  TIME_TASK_DETAIL_POW = 1;
+
+  TIME_TASK_DETAIL_TEMP = 2;
+
+  TIME_TASK_DETAIL_LEVEL = 3;
+
+  TIME_TASK_DETAIL_SOC = 4;
+
+  TIME_TASK_DETAIL_HUMI = 5;
+
+  TIME_TASK_DETAIL_MODE = 6;
+
+  TIME_TASK_DETAIL_FAN = 7;
+
+  TIME_TASK_DETAIL_SUBMODE = 8;
+
+  TIME_TASK_DETAIL_UPPER_TEMP = 9;
+
+  TIME_TASK_DETAIL_LOWER_TEMP = 10;
+
+  TIME_TASK_DETAIL_ALLOW_FEED_GRID = 11;
+
+  TIME_TASK_DETAIL_SWITCH_IDX = 12;
+}

@@ -1,0 +1,177 @@
+syntax = "proto3";
+
+package sys;
+
+message EfFd100ReportPack {
+  optional uint32 scenes = 1;
+
+  optional uint32 word = 2;
+
+  optional uint32 mode = 3;
+
+  optional uint32 lux = 4;
+
+  optional uint32 lux_grade = 5;
+
+  optional uint32 water = 6;
+
+  optional uint32 wind = 7;
+
+  optional uint32 shake = 8;
+
+  optional uint32 angle = 9;
+
+  optional uint32 angle_manual = 10;
+
+  optional uint32 angle_target = 11;
+
+  optional uint32 charge_state = 12;
+
+  optional uint32 charge_timer = 13;
+
+  optional uint32 battery_percent = 14;
+
+  optional uint32 battery_temperature = 15;
+
+  optional uint32 switch_state = 16;
+
+  optional uint32 err_code = 17;
+
+  optional uint32 track_tim = 18;
+
+  optional uint32 str_lux = 19;
+
+  optional uint32 light_sen = 20;
+
+  optional uint32 shark_sen = 21;
+
+  optional uint32 hw_ver = 22;
+
+  optional uint32 motor_ver = 23;
+
+  optional uint32 track_num = 24;
+
+  optional uint32 track_tim_duration = 25;
+
+  optional uint32 return_utctime = 26;
+
+  optional sint32 return_zonetime = 27;
+}
+
+message EfFd100SetScenesStatePack {
+  uint32 scenes_state_set = 1;
+}
+
+message EfFd100SetScenesStatePackAck {
+  sint32 result = 1;
+}
+
+message EfFd100SetPowerStatePack {
+  uint32 power_state_set = 1;
+}
+
+message EfFd100SetPowerStatePackAck {
+  sint32 result = 1;
+}
+
+message EfFd100SetWorkModePack {
+  uint32 work_mode_set = 1;
+}
+
+message EfFd100SetWorkModePackAck {
+  sint32 result = 1;
+}
+
+message EfFd100SetBeepEnPack {
+  uint32 beep_en_set = 1;
+}
+
+message EfFd100SetBeepEnPackAck {
+  sint32 result = 1;
+}
+
+message EfFd100SetRainProtectPack {
+  uint32 rain_protect = 1;
+}
+
+message EfFd100SetRainProtectPackAck {
+  sint32 result = 1;
+}
+
+message EfFd100SetWindProtectPack {
+  uint32 wind_protect = 1;
+
+  uint32 shark_sen = 2;
+}
+
+message EfFd100SetWindProtectPackAck {
+  sint32 result = 1;
+}
+
+message EfFd100SetWeatherProtectPack {
+  uint32 weather_protect = 1;
+}
+
+message EfFd100SetWeatherProtectPackAck {
+  sint32 result = 1;
+}
+
+message EfFd100SetManualAnglePack {
+  uint32 angle_set = 1;
+}
+
+message EfFd100SetManualAnglePackAck {
+  sint32 result = 1;
+}
+
+message EfFd100SetIotUnbindPack {
+  uint32 iot_unbind = 1;
+}
+
+message EfFd100SetIotUnbindPackAck {
+  sint32 result = 1;
+}
+
+message EfFd100SetIotLightTrackGapPack {
+  uint32 track_tim = 1;
+}
+
+message EfFd100SetIotLightTrackGapPackAck {
+  sint32 result = 1;
+}
+
+message EfFd100SetIotLightStartValPack {
+  uint32 str_lux = 1;
+
+  uint32 light_sen = 2;
+}
+
+message EfFd100SetIotLightStartValPackAck {
+  sint32 result = 1;
+}
+
+message EfFd100SetIotLightSenPack {
+  uint32 light_sen = 1;
+}
+
+message EfFd100SetIotLightSenPackAck {
+  sint32 result = 1;
+}
+
+message EfFd100SetIotSharkSenPack {
+  uint32 shark_sen = 1;
+}
+
+message EfFd100SetIotSharkSenPackAck {
+  sint32 result = 1;
+}
+
+message EfFd100SetIotTimeCfgPack {
+  uint32 utc_time = 1;
+
+  sint32 utc_timezone = 2;
+}
+
+message EfFd100SetIotTimeCfgPackAck {
+  sint32 result = 1;
+}

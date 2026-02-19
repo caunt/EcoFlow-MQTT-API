@@ -1,0 +1,111 @@
+syntax = "proto3";
+
+message EnergyItem {
+  uint32 timestamp = 1;
+
+  uint32 watth_type = 2;
+
+  repeated uint32 watth = 3;
+}
+
+message EnergyTotalReport {
+  uint32 watth_seq = 1;
+
+  EnergyItem watth_item = 2;
+}
+
+message BatchEnergyTotalReport {
+  uint32 watth_seq = 1;
+
+  repeated EnergyItem watth_item = 2;
+}
+
+message EnergyTotalReportAck {
+  uint32 result = 1;
+
+  uint32 watth_seq = 2;
+
+  uint32 watth_type = 3;
+}
+
+message EventRecordItem {
+  uint32 timestamp = 1;
+
+  uint32 sys_ms = 2;
+
+  uint32 event_no = 3;
+
+  repeated float event_detail = 4;
+}
+
+message EventRecordReport {
+  uint32 event_ver = 1;
+
+  uint32 event_seq = 2;
+
+  repeated EventRecordItem event_item = 3;
+}
+
+message EventInfoReportAck {
+  uint32 result = 1;
+
+  uint32 event_seq = 2;
+
+  uint32 event_item_num = 3;
+}
+
+message ProductNameSet {
+  string name = 1;
+}
+
+message ProductNameSetAck {
+  uint32 result = 1;
+}
+
+message ProductNameGet {
+}
+
+message ProductNameGetAck {
+  string name = 3;
+}
+
+message RTCTimeGet {
+}
+
+message RTCTimeGetAck {
+  uint32 timestamp = 1;
+
+  int32 timezone = 2;
+}
+
+message RTCTimeSet {
+  uint32 timestamp = 1;
+
+  optional int32 timezone = 2;
+}
+
+message RTCTimeSetAck {
+  uint32 result = 1;
+}
+
+message country_town_message {
+  uint32 country = 1;
+
+  uint32 town = 2;
+}
+
+enum PlCmdSets {
+  PL_NONE_CMD_SETS = 0;
+
+  PL_BASIC_CMD_SETS = 1;
+
+  PL_EXT_CMD_SETS = 254;
+}
+
+enum PlCmdId {
+  PL_CMD_ID_NONE = 0;
+
+  PL_CMD_ID_XLOG = 16;
+
+  PL_CMD_ID_WATTH = 32;
+}

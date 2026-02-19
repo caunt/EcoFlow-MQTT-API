@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+message ApFollowInfoListGet {
+}
+
+message ApFollowInfoAck {
+  uint32 followSwitch = 1;
+
+  uint32 packLostRate = 2;
+
+  int32 rssi = 3;
+
+  int32 ipAddr = 4;
+
+  string bssid = 5;
+
+  string ssid = 6;
+
+  string pwd = 7;
+
+  uint32 isConnect = 8;
+
+  uint32 isEnable = 9;
+
+  uint32 isFound = 10;
+
+  uint32 retryCnt = 11;
+
+  uint32 channel = 12;
+
+  uint32 disconnectReason = 13;
+
+  uint32 connectTimeStamp = 14;
+}
+
+message ApFollowInfoListAck {
+  repeated ApFollowInfoAck list = 1;
+}
+
+message ApFollowInfoSet {
+  uint32 follow_switch = 1;
+
+  uint32 ssidLen = 2;
+
+  string ssid = 3;
+}
+
+message ApFollowInfoDelete {
+  uint32 ssidLen = 1;
+
+  string ssid = 2;
+}
+
+message ApFollowCmdAck {
+  int32 result = 1;
+}

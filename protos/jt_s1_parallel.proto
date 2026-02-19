@@ -1,0 +1,87 @@
+syntax = "proto3";
+
+message DevInfo {
+  uint32 dev_addr = 1;
+
+  string dev_sn = 2;
+}
+
+message ParallelEnergyStream {
+  float sys_load_pwr = 1;
+
+  float sys_grid_pwr = 2;
+
+  float mppt_pwr = 3;
+
+  float bp_pwr = 4;
+
+  uint32 bp_soc = 5;
+
+  string dev_sn = 6;
+}
+
+message ParallelEnergyStreamReport {
+  repeated ParallelEnergyStream para_energy_stream = 1;
+}
+
+message ParallelEnergyStreamItem {
+  float load_pwr = 1;
+
+  float grid_pwr = 2;
+
+  float mppt_pwr = 3;
+
+  float bp_pwr = 4;
+
+  uint32 timestamp = 5;
+
+  uint32 bp_soc = 7;
+
+  string dev_sn = 8;
+}
+
+message ParallelEnergyStreamDetail {
+  repeated ParallelEnergyStreamItem para_energy_stream_detail = 1;
+
+  uint32 para_sys_seq = 2;
+}
+
+message ParallelEnergyStreamDetailAck {
+  uint32 sys_seq = 1;
+
+  optional uint32 sys_energy_num = 2;
+}
+
+message ParallelDevList {
+  repeated DevInfo para_dev = 1;
+}
+
+message LanDevInfo {
+  optional uint32 groupid = 1;
+
+  optional string sn = 2;
+
+  optional uint32 id_pri = 3;
+
+  bool dev_online = 4;
+}
+
+message ParallelLanDevList {
+  repeated LanDevInfo lan_para_dev = 1;
+}
+
+message ParallelDevListReport {
+  optional ParallelDevList para_dev_list = 1;
+
+  optional ParallelDevList para_dev_onflict_list = 2;
+
+  optional ParallelLanDevList para_lan_dev_list = 3;
+}
+
+message ParallelMasterDevSet {
+  uint32 para_master_daddr = 1;
+}
+
+message ParallelMasterDevSetAck {
+  uint32 result = 1;
+}
