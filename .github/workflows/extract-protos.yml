@@ -21,6 +21,8 @@ jobs:
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10'
 
       - name: Setup Go
         uses: actions/setup-go@v6
@@ -33,7 +35,7 @@ jobs:
           mkdir -p downloads
           apkeep -a com.ecoflow downloads
 
-      - name: Run EcoFlow.Mqtt.Api over downloaded file
+      - name: Export file descriptor set from APK
         run: |
           fileName="$(ls -1 downloads | head -n 1)"
 
