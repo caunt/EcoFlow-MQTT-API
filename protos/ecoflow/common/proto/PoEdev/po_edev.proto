@@ -1,0 +1,1395 @@
+syntax = "proto3";
+
+package ecoflow.common.proto.PoEdev;
+
+message EdevBaseInfo {
+  uint32 dev_addr = 1;
+
+  optional string dev_sn = 2;
+
+  optional uint32 sub_addr = 3;
+}
+
+message EDevGet {
+  uint32 dev_addr = 1;
+}
+
+message EDevGetItem {
+  EdevBaseInfo dev_info = 1;
+}
+
+message EDevGetAck {
+  repeated EDevGetItem dev_list = 1;
+
+  uint32 local_connected = 2;
+}
+
+message EDevBind {
+  EdevBaseInfo dev_info = 1;
+
+  bool bind_flg = 2;
+
+  optional uint32 commute_type = 3;
+
+  optional uint32 trig_role = 4;
+}
+
+message EDevBindAck {
+  EdevBaseInfo dev_info = 1;
+
+  bool bind_flg = 2;
+
+  int32 result = 3;
+
+  uint32 commute_type = 4;
+
+  uint32 target_topology_lev = 5;
+}
+
+message EDevBindItem {
+  EdevBaseInfo dev_info = 1;
+
+  uint32 commute_type = 2;
+
+  uint32 online_bits = 3;
+
+  optional uint32 dev_prio = 4;
+
+  uint32 topology_lev = 5;
+
+  optional bool is_pcs_master = 6;
+
+  optional bool is_energy_master = 7;
+
+  bool is_center_node = 8;
+}
+
+message DevListReport {
+  uint32 dev_addr = 1;
+
+  repeated EDevBindItem dev_type_child = 2;
+
+  EDevBindItem dev_host = 3;
+}
+
+message SingleCenterItem {
+  string parent_sn = 1;
+
+  EDevBindItem dev_center = 2;
+
+  uint32 child_node_num = 3;
+}
+
+message CenterList {
+  repeated SingleCenterItem dev_center = 3;
+}
+
+message EDevBindListGet {
+  EdevBaseInfo dev_info = 1;
+
+  uint32 operation_type = 2;
+}
+
+message energy_lev_set {
+  optional EdevBaseInfo dev_info = 1;
+
+  uint32 target_lev = 2;
+
+  string parnet_sn = 3;
+
+  uint32 parnet_link = 4;
+
+  uint32 trig_role = 5;
+}
+
+message EDevEnergyRemoteListSync {
+  uint32 dev_addr = 1;
+}
+
+message EDevEnergyRemoteListSyncAck {
+  uint32 dev_addr = 1;
+
+  repeated EdevBaseInfo dev_list = 2;
+}
+
+message EDevPriorityItem {
+  EdevBaseInfo dev_info = 1;
+
+  uint32 dev_prio = 2;
+
+  bool enable = 3;
+
+  optional uint32 prio_type = 4;
+
+  optional uint32 type = 5;
+
+  bytes data = 6;
+}
+
+message EDevPriorityListSet {
+  repeated EDevPriorityItem dev_prio_set = 1;
+}
+
+message EDevPriorityListSetAck {
+  int32 result = 1;
+}
+
+message EDevPriorityListReport {
+  repeated EDevPriorityItem dev_prio_report = 1;
+}
+
+message EDevPriorityListReportGet {
+}
+
+message EDevRunDataGet {
+  EdevBaseInfo dev_info = 1;
+}
+
+message EDevRunData {
+  EdevBaseInfo dev_info = 1;
+
+  bytes data = 2;
+}
+
+message EDevOnOffSet {
+  EdevBaseInfo dev_info = 1;
+
+  uint32 on_off_set = 2;
+}
+
+message EDevOnOffSetAck {
+  EdevBaseInfo dev_info = 1;
+
+  uint32 result = 2;
+}
+
+message EDevRemotCtrlSet {
+  EdevBaseInfo dev_info = 1;
+
+  bytes data = 2;
+}
+
+message EDevRemotCtrlSetAck {
+  EdevBaseInfo dev_info = 1;
+
+  uint32 result = 2;
+}
+
+message EDevModeSet {
+  EdevBaseInfo dev_info = 1;
+
+  uint32 mode = 2;
+}
+
+message EDevModeSetAck {
+  EdevBaseInfo dev_info = 1;
+
+  uint32 result = 2;
+}
+
+message EDevParamSet {
+  EdevBaseInfo dev_info = 1;
+
+  bytes data = 2;
+}
+
+message EDevParamSetAck {
+  EdevBaseInfo dev_info = 1;
+
+  uint32 result = 2;
+}
+
+message EDevParamReport {
+  EdevBaseInfo dev_info = 1;
+
+  bytes data = 2;
+}
+
+message RTUPointItem {
+  uint32 address = 1;
+
+  optional int32 u_value = 2;
+
+  optional uint32 value_type = 3;
+}
+
+message EdevPointParamSet {
+  EdevBaseInfo dev_info = 1;
+
+  repeated RTUPointItem rtu_pt = 2;
+}
+
+message EdevPointParamSetAck {
+  EdevBaseInfo dev_info = 1;
+
+  int32 result = 2;
+
+  repeated RTUPointItem rtu_pt = 3;
+}
+
+message EdevPointParamGet {
+  EdevBaseInfo dev_info = 1;
+
+  repeated RTUPointItem rtu_pt = 2;
+}
+
+message EdevPointParamGetAck {
+  EdevBaseInfo dev_info = 1;
+
+  repeated RTUPointItem rtu_pt = 2;
+}
+
+message EDevToRemoteHeartBeat {
+  EdevBaseInfo dev_info = 1;
+
+  bytes data = 2;
+}
+
+message EDevFromRemoteHeartBeat {
+  EdevBaseInfo dev_info = 1;
+
+  bytes data = 2;
+}
+
+message TimeTaskParamDetail {
+  TIME_TASK_DETAIL_TYPE type = 1;
+
+  float val = 2;
+}
+
+message EDevTimerTaskCfg {
+  uint32 task_index = 1;
+
+  bool is_cfg = 2;
+
+  bool is_enable = 3;
+
+  uint32 conflict_flag = 4;
+
+  TIME_TASK_MODE time_mode = 5;
+
+  uint32 time_param = 6;
+
+  uint32 time_table = 7;
+
+  TIME_TASK_TYPE task_type = 8;
+
+  uint32 task_param = 9;
+
+  repeated TimeTaskParamDetail task_param_detail = 10;
+}
+
+message EDevTimerTaskCfgSet {
+  EdevBaseInfo dev_info = 1;
+
+  EDevTimerTaskCfg timer_task = 2;
+}
+
+message EDevTimerTaskCfgSetAck {
+  EdevBaseInfo dev_info = 1;
+
+  uint32 type = 2;
+
+  uint32 task_index = 3;
+
+  int32 result = 4;
+}
+
+message EDevTimerTaskGet {
+  EdevBaseInfo dev_info = 1;
+}
+
+message EDevTimerTaskReport {
+  EdevBaseInfo dev_info = 1;
+
+  repeated EDevTimerTaskCfg time_task_cfg = 2;
+
+  optional EDevTimerTaskCfg curr_task = 3;
+}
+
+message EDevEnergyStreamShowItem {
+  EdevBaseInfo dev_info = 1;
+
+  float pwr = 2;
+
+  float from_pv = 4;
+
+  float from_bat = 5;
+
+  float from_grid = 6;
+}
+
+message EDevEnergyStreamShow {
+  repeated EDevEnergyStreamShowItem energy = 1;
+}
+
+message EDevEnergyStreamHistoryItem {
+  EdevBaseInfo dev_info = 1;
+
+  fixed32 timestamp = 2;
+
+  float pwr = 3;
+
+  repeated float param = 4;
+}
+
+message EDevEnergyStreamHistory {
+  uint32 seq = 1;
+
+  repeated EDevEnergyStreamHistoryItem energy_history = 2;
+}
+
+message EDevEnergyStreamHistoryAck {
+  uint32 seq = 1;
+
+  uint32 energy_num = 2;
+
+  optional uint32 state = 3;
+}
+
+message EDevEnergyItem {
+  fixed32 timestamp = 1;
+
+  uint32 watth_type = 2;
+
+  repeated uint32 watth = 3;
+}
+
+message EDevEnergyTotalReport {
+  EdevBaseInfo dev_info = 1;
+
+  uint32 watth_seq = 2;
+
+  EDevEnergyItem watth_item = 3;
+}
+
+message EDevEnergyTotalReportAck {
+  EdevBaseInfo dev_info = 1;
+
+  int32 result = 2;
+
+  uint32 watth_seq = 3;
+
+  uint32 watth_type = 4;
+}
+
+message EDevExpendCtrl {
+  EdevBaseInfo dev_info = 1;
+
+  uint32 expend_cmd = 2;
+
+  bytes data = 3;
+}
+
+message EDevExpendCtrlAck {
+  EdevBaseInfo dev_info = 1;
+
+  uint32 expend_cmd = 2;
+
+  int32 result = 3;
+
+  bytes data = 4;
+}
+
+message EDevBatchItem {
+  EdevBaseInfo dev_info = 1;
+
+  bytes data = 2;
+}
+
+message EDevBatchItemAck {
+  EdevBaseInfo dev_info = 1;
+
+  int32 result = 2;
+
+  bytes data = 3;
+}
+
+message EDevBatchBindAck {
+  uint32 remain_num = 1;
+}
+
+message EDevBatchOP {
+  repeated EDevBatchItem item_info = 1;
+
+  uint32 cmd_id = 2;
+}
+
+message EDevBatchOPAck {
+  repeated EDevBatchItemAck item_ack_info = 1;
+
+  int32 result = 2;
+
+  int32 progress = 3;
+
+  uint32 cmd_id = 4;
+
+  bytes data = 5;
+}
+
+message EdevCmdSetReply {
+  uint32 cmd_id = 1;
+
+  uint32 res = 2;
+
+  optional EDevBindAck bind_ack = 3;
+
+  optional EDevPriorityListSetAck priority_set_ack = 4;
+
+  optional EDevOnOffSetAck on_off_set_ack = 5;
+
+  optional EDevRemotCtrlSetAck remote_ctr_set_ack = 6;
+
+  optional EDevModeSetAck mode_set_ack = 7;
+
+  optional EDevParamSetAck param_set_ack = 8;
+
+  optional EdevPointParamSetAck point_param_set_ack = 9;
+
+  optional EdevPointParamGetAck point_param_get_ack = 10;
+
+  optional EDevTimerTaskCfgSetAck timer_task_set_ack = 11;
+
+  optional EDevExpendCtrlAck expend_ctr_ack = 12;
+
+  optional EDevBatchOPAck batch_operation_ack = 13;
+
+  optional EDevGetAck get_ack = 14;
+}
+
+message EDevEVChargingParamSet {
+  optional float expect_charging_energy = 2;
+
+  optional uint32 stop_charging_soc = 3;
+
+  optional uint32 ev_plug_and_play = 4;
+
+  optional uint32 work_mode = 5;
+
+  optional uint32 use_grid_first = 6;
+
+  optional uint32 switch_bits = 7;
+}
+
+message EDevEvChargingParamReport {
+  optional float expect_charging_energy = 1;
+
+  optional uint32 stop_charging_soc = 2;
+
+  optional uint32 online_bits = 3;
+
+  optional uint32 ev_plug_and_play = 4;
+
+  optional EDevEvChgSts charging_status = 5;
+
+  optional bytes error_code = 6;
+
+  optional float ev_pwr = 7;
+
+  optional float ev_charging_energy = 8;
+
+  optional uint32 work_mode = 9;
+
+  optional uint32 order_time = 10;
+
+  optional uint32 order_state = 11;
+
+  optional string default_vehicle_id = 12;
+
+  optional string charge_vehicle_id = 13;
+
+  optional fixed32 order_start_timestamp = 14;
+
+  optional fixed32 order_end_timestamp = 15;
+
+  optional uint32 use_grid_first = 16;
+
+  optional uint32 switch_bits = 17;
+
+  optional uint32 ev_phase_set = 30;
+
+  optional uint32 ev_curr_set = 31;
+
+  optional uint32 ev_user_manual = 32;
+
+  optional uint32 ev_onoff_set = 33;
+
+  optional uint32 ev_detect_phase = 34;
+
+  optional uint32 ev_exe_mode = 35;
+}
+
+message EDevEvChargingRunData {
+  optional uint32 charging_volt_r = 2;
+
+  optional uint32 charging_curr_r = 3;
+
+  optional uint32 charging_volt_s = 4;
+
+  optional uint32 charging_curr_s = 5;
+
+  optional uint32 charging_volt_t = 6;
+
+  optional uint32 charging_curr_t = 7;
+
+  optional uint32 charging_pwr = 8;
+
+  optional uint32 charging_energy = 9;
+
+  optional EDevEvChgSts charging_status = 10;
+
+  optional bytes error_code = 11;
+}
+
+message EDevEvChargingCtrl {
+  optional uint32 charging_ctrl = 1;
+
+  optional float charging_current = 2;
+
+  optional EDevEvChgMode charging_mode = 3;
+}
+
+message EDevEvChargingEMS2EVHeartBeat {
+  optional float total_pv_energy = 2;
+
+  optional uint32 phase_req = 3;
+}
+
+message EDevEvChargingEV2EMSHeartBeat {
+}
+
+message EDevEVOrdersItem {
+  EdevBaseInfo dev_info = 1;
+
+  string vehicle_id = 2;
+
+  fixed32 start_timestamp = 3;
+
+  fixed32 end_timestamp = 4;
+
+  repeated float watth = 5;
+
+  fixed32 order_id = 6;
+}
+
+message EDevEVOrdersDetail {
+  repeated EDevEVOrdersItem order = 1;
+
+  uint32 sys_seq = 2;
+}
+
+message EDevEVOrdersDetailAck {
+  uint32 sys_seq = 1;
+
+  optional uint32 order_num = 2;
+}
+
+message EDevEvVehicleSet {
+  optional string default_vehicle_id = 2;
+
+  optional string charge_vehicle_id = 3;
+}
+
+message EDevEvAppCtrl {
+  uint32 charging_ctrl = 2;
+}
+
+message EDevHeatingRodRunData {
+  optional uint32 heating_power = 2;
+
+  optional uint32 target_power = 3;
+
+  optional uint32 temp = 4;
+
+  optional uint32 target_temp = 5;
+
+  optional uint32 run_stat = 6;
+
+  optional uint32 error_code = 7;
+
+  optional uint32 water_tank_volume = 8;
+
+  optional uint32 target_run_stat = 9;
+
+  optional bool online = 10;
+
+  optional uint32 selfcheck_percent = 11;
+
+  optional uint32 run_flag_bit = 12;
+
+  optional uint32 dry_heat_ignore = 13;
+}
+
+message EDevHeatingRodCtrl {
+  optional uint32 heating_rod_ctrl = 2;
+
+  optional uint32 heating_rod_power = 3;
+
+  optional uint32 heating_rod_temp = 4;
+
+  optional uint32 water_tank_volume = 5;
+
+  optional uint32 run_flag_bit = 6;
+
+  optional uint32 dry_heat_clear = 7;
+}
+
+message EDevHeatingRodParamSet {
+  optional uint32 run_sta_ctrl = 2;
+
+  optional uint32 mode = 3;
+
+  optional uint32 target_temp = 4;
+
+  optional uint32 target_power = 5;
+
+  optional uint32 water_tank_volume = 6;
+
+  optional uint32 dry_heat_ignore = 7;
+}
+
+message EDevHRParamReport {
+  optional uint32 mode = 2;
+
+  optional uint32 online_bits = 3;
+
+  optional uint32 heating_power = 4;
+
+  optional uint32 target_power = 5;
+
+  optional float temp = 6;
+
+  optional float target_temp = 7;
+
+  optional uint32 run_stat = 8;
+
+  optional uint32 error_code = 9;
+
+  optional uint32 water_tank_volume = 10;
+
+  optional uint32 selfcheck_percent = 11;
+
+  optional uint32 run_flag = 12;
+
+  optional uint32 dry_heat_ignore = 13;
+}
+
+message EDevHeatPumpParamSet {
+  optional float rated_power = 1;
+
+  optional uint32 ui_perio = 2;
+
+  optional uint32 perio_aging = 3;
+}
+
+message EDevHeatPumpReport {
+  optional uint32 online = 1;
+
+  optional bytes error_code = 2;
+}
+
+message HPTempSector {
+  uint32 switch_stat = 1;
+
+  float temp_target = 2;
+
+  float temp_curr = 3;
+
+  uint32 heat_curve = 4;
+
+  uint32 cool_curve = 5;
+}
+
+message HPBoard {
+  uint32 hp_mode = 1;
+
+  uint32 switch_stat = 2;
+
+  float temp_ambient = 3;
+
+  float temp_inlet = 4;
+
+  float temp_outlet = 5;
+
+  optional uint32 run_mode = 6;
+
+  optional uint32 run_flg0 = 7;
+
+  optional uint32 run_flg1 = 8;
+
+  optional uint32 icon_bits = 9;
+
+  optional uint32 spec_mode = 10;
+
+  optional bytes ext_info = 11;
+}
+
+message EDevHPUIReport {
+  optional HPBoard hp_master = 1;
+
+  optional HPTempSector sector_a = 2;
+
+  optional HPTempSector sector_b = 3;
+
+  optional HPTempSector sector_dhw = 4;
+}
+
+message EDevSgReadyStatParam {
+  bool ems_sg_stat_en = 1;
+
+  optional uint32 ems_sg_stat = 2;
+
+  optional uint32 ems_sg_pwr = 3;
+
+  optional uint32 ems_sg_soc = 4;
+}
+
+message EDevSgReadyParam {
+  optional EDevSgReadyMode ems_sg_mode = 1;
+
+  repeated EDevSgReadyStatParam ems_sg_param = 2;
+
+  optional uint32 ems_sg_rate_pwr = 3;
+
+  optional uint32 ems_sg_swit_time = 4;
+}
+
+message EDevSgReadySet {
+  optional EDevSgReadyParam ems_sg_ready = 1;
+
+  optional bool ems_sg_ready_en = 2;
+}
+
+message EDevSgReadySetAck {
+  sint32 result = 1;
+}
+
+message EDevSgReadyItem {
+  optional uint32 sg_ready_stat = 1;
+
+  optional fixed32 timestamp = 2;
+
+  optional uint32 run_times = 3;
+}
+
+message EDevSgReadyDetail {
+  uint32 sys_seq = 1;
+
+  repeated EDevSgReadyItem sys_sg_ready_detail = 2;
+}
+
+message EDevSgReadyDetailAck {
+  uint32 sys_seq = 1;
+
+  uint32 detail_num = 2;
+}
+
+message EDevSmartPlugParam {
+  optional float household_pwr = 1;
+
+  optional float max_pwr = 2;
+}
+
+message EDevSmartPlugParamReport {
+  optional float household_pwr = 1;
+
+  optional float max_pwr = 2;
+
+  optional uint32 switch_stat = 3;
+
+  bytes error_code = 4;
+}
+
+message EDevSmartPlugRunDataSync {
+  optional float real_pwr = 1;
+
+  optional uint32 switch_stat = 2;
+
+  optional bool remote_online = 3;
+
+  bytes error_code = 4;
+}
+
+message EDevSmartPlugCtrl {
+  optional uint32 switch_stat = 1;
+}
+
+message EDevSmartPlugThirdParam {
+  optional float household_pwr = 1;
+
+  optional float max_pwr = 2;
+}
+
+message EDevSmartPlugThirdSocketReportItem {
+  optional string socket_sn = 1;
+
+  optional uint32 socket_idx = 2;
+
+  optional uint32 socket_stat = 3;
+
+  optional float socket_pwr = 4;
+}
+
+message EDevSmartPlugThirdParamReport {
+  optional float household_pwr = 1;
+
+  optional float max_pwr = 2;
+
+  optional uint32 switch_stat = 3;
+
+  optional uint32 sub_idx = 4;
+
+  optional uint32 socket_num = 5;
+
+  repeated EDevSmartPlugThirdSocketReportItem socket_info = 6;
+
+  bytes error_code = 7;
+}
+
+message EDevSmartPlugThirdRunDataSync {
+  optional float real_pwr = 1;
+
+  optional uint32 switch_stat = 2;
+
+  optional bool remote_online = 3;
+
+  optional uint32 sub_type = 4;
+
+  optional uint32 socket_num = 5;
+
+  repeated EDevSmartPlugThirdSocketReportItem socket_info = 6;
+
+  bytes error_code = 7;
+}
+
+message EDevSmartPlugThirdSocketCtrlItem {
+  optional string socket_sn = 1;
+
+  optional uint32 socket_idx = 2;
+
+  uint32 ctrl_stat = 3;
+}
+
+message EDevSmartThirdPlugCtrl {
+  optional uint32 switch_stat = 1;
+
+  optional uint32 sub_type = 2;
+
+  repeated EDevSmartPlugThirdSocketCtrlItem socket_ctrl = 3;
+}
+
+message EdevDevSubInfoFix {
+  EdevBaseInfo dev_info = 1;
+
+  uint32 modbus_addr = 2;
+
+  uint32 bind_type = 3;
+
+  uint32 mem_dev_idx = 4;
+
+  uint32 dev_flag = 5;
+
+  uint32 dev_attr_cur = 6;
+
+  uint32 dev_state_info = 7;
+
+  uint32 scene_type = 8;
+
+  uint32 current_prio = 9;
+
+  float target_max = 10;
+
+  uint32 error_code = 11;
+
+  uint32 warn_code = 12;
+
+  uint32 online_bits = 13;
+
+  uint32 fault_code = 14;
+}
+
+message EdevDevSubInfoVar {
+  EdevBaseInfo dev_info = 1;
+
+  float allocated_power = 2;
+
+  float real_power_lock = 3;
+
+  float ref_power = 4;
+}
+
+message EdevDevInfoFix {
+  repeated EdevDevSubInfoFix dev_sub_info_fix = 1;
+}
+
+message EdevDevInfoVar {
+  repeated EdevDevSubInfoVar dev_sub_info_var = 1;
+}
+
+message EDevSysReport {
+  optional uint32 sys_flag = 1;
+
+  optional uint32 soc_dev = 2;
+
+  optional float soc_cur = 4;
+
+  optional float feed_pwr_cap = 6;
+
+  optional float breaker_pwr_cap = 7;
+
+  optional float bp_chg_cap = 9;
+
+  optional uint32 used_num = 30;
+
+  optional uint32 free_num = 31;
+
+  optional EdevDevInfoFix dev_info_fix = 32;
+
+  optional EdevDevInfoVar dev_info_var = 33;
+
+  optional uint32 solar_flag = 41;
+
+  optional uint32 dispatch_type = 42;
+
+  optional float pcl_pwr_base = 44;
+
+  optional uint32 start_state = 45;
+
+  optional uint32 strat_type = 46;
+
+  optional uint32 dev_first_info = 47;
+
+  optional uint32 dev_last_info = 48;
+
+  optional uint32 dev_last_min_info = 49;
+
+  optional uint32 po_run_mode = 52;
+
+  optional float pcl_pwr_offset = 53;
+}
+
+message EDevStdBroadInfo {
+  uint32 protocol_ver = 1;
+
+  EdevBaseInfo host_info = 2;
+
+  uint32 host_tree_lev = 3;
+
+  bool scan_is_open = 4;
+
+  optional uint32 scan_dev_addr = 5;
+
+  bool is_support_auto_bind = 6;
+
+  uint32 broad_dev_type = 7;
+}
+
+message DevStorePwrModel {
+  uint32 cur_soc = 1;
+
+  uint32 on_grid_dsg_soc = 2;
+
+  uint32 off_grid_dsg_soc = 3;
+
+  float cur_pwr = 4;
+
+  float max_chg_ability = 5;
+
+  float max_dsg_ability = 6;
+
+  float chg_pwr_set = 7;
+
+  float dsg_pwr_set = 8;
+
+  optional float chg_soc_max = 9;
+
+  float capacity = 10;
+}
+
+message DevGenPwrModel {
+  uint32 energy_type = 1;
+
+  uint32 cur_pwr = 2;
+
+  optional uint32 max_pwr = 10;
+
+  optional uint32 prio = 11;
+
+  optional uint32 target_pwr = 12;
+}
+
+message DevUsePwrModel {
+  uint32 cur_pwr = 1;
+
+  uint32 target_pwr = 2;
+
+  uint32 use_pwr_max = 3;
+
+  uint32 use_pwr_min = 4;
+
+  optional uint32 start_pwr = 10;
+
+  optional uint32 running_min_pwr = 11;
+
+  optional uint32 running_min_min = 12;
+
+  optional uint32 pwr_step_up = 13;
+
+  optional uint32 pwr_step_down = 14;
+}
+
+message DevEvent {
+  Event event = 1;
+
+  uint32 val = 2;
+}
+
+message SysInfo {
+  EdevBaseInfo dev_info = 1;
+
+  optional bool grid_connection_sta = 11;
+
+  optional uint32 max_breaker_capacity = 12;
+
+  optional float current_mel = 13;
+
+  optional float curretn_mil = 14;
+
+  optional float max_feed_grid_pwr = 15;
+
+  optional float force_feed_grid_pwr = 16;
+
+  optional float cur_grid_pwr = 17;
+
+  optional bool server_connect_sta = 18;
+
+  optional int32 time_zone = 19;
+
+  optional uint32 load_use_pwr_soc = 20;
+
+  optional bool app_connect_sta = 21;
+
+  optional float sys_load_pwr = 22;
+
+  optional float sys_pv_to_load_pwr = 23;
+
+  optional float sys_grid_to_load_pwr = 24;
+
+  optional float sys_bat_to_load_pwr = 25;
+}
+
+message PwrSourceList {
+  uint32 grid_to_dev_pwr = 1;
+
+  uint32 solar_to_dev_pwr = 2;
+
+  uint32 battery_to_dev_pwr = 3;
+}
+
+message DevConfigWrite {
+  EdevBaseInfo dev_info = 1;
+
+  optional DevEvent cmd = 2;
+
+  optional bool active_property_full_upload = 3;
+
+  optional bool cfg_sys_pause = 4;
+
+  optional bool cfg_sys_resume = 5;
+
+  optional bool active_sys_selfcheck = 6;
+
+  optional bool cfg_dev_detect_switch = 7;
+
+  optional bool force_off_grid_switch = 8;
+
+  optional EdevBaseInfo master_info = 9;
+
+  optional uint32 protocol_ver = 10;
+
+  optional float store_chg_pwr_set = 100;
+
+  optional float store_dsg_pwr_set = 101;
+
+  optional uint32 use_target_pwr = 200;
+
+  optional PwrSourceList pwr_source = 201;
+
+  optional uint32 gen_target_pwr = 300;
+
+  optional bytes feature_data = 500;
+}
+
+message DevPropertyUpload {
+  EdevBaseInfo dev_info = 1;
+
+  optional uint32 selfcheck_result = 2;
+
+  optional bool server_connect_sta = 3;
+
+  uint32 pwr_attr = 4;
+
+  uint32 energy_node_type = 5;
+
+  optional uint32 mod_fault_sta = 6;
+
+  optional uint32 fault_code = 7;
+
+  optional uint32 err_code = 8;
+
+  optional uint32 warn_code = 9;
+
+  WorkSta work_sta = 10;
+
+  optional uint32 tree_lev = 11;
+
+  optional uint32 leave_node_num = 12;
+
+  bool is_allowed_ctrl = 101;
+
+  optional bool is_accept_solar_ctrl = 102;
+
+  optional uint32 solar_ctrl_prio = 103;
+
+  optional uint32 need_master_realize_scene = 104;
+
+  optional bool is_pwr_on = 105;
+
+  optional DevEvent dev_event = 106;
+
+  optional DevGenPwrModel gen_model = 201;
+
+  optional DevStorePwrModel store_model = 202;
+
+  optional DevUsePwrModel use_model = 203;
+
+  float total_pwr_cur = 204;
+
+  float total_pwr_input_limit = 205;
+
+  float total_pwr_output_limit = 206;
+
+  optional float dev_surplus_green_pwr = 207;
+
+  optional bytes feature_data = 300;
+}
+
+message SmartLoadSwitchList {
+  repeated bool sta = 1;
+}
+
+message HostReportFeature {
+  optional SmartLoadSwitchList smart_load_switch_list = 1;
+
+  optional bool is_parallel_master = 2;
+
+  optional uint32 parallel_count = 3;
+}
+
+message HessReportFeature {
+  bool is_parallel_master = 2;
+
+  optional uint32 parallel_count = 3;
+}
+
+message HostWriteFeature {
+  optional bool is_have_parnet = 1;
+
+  optional bool parnet_is_online = 2;
+
+  optional string parnet_sn = 3;
+
+  optional bool is_energy_master = 4;
+}
+
+enum DevAddr {
+  ALL = 0;
+
+  SHP = 11;
+
+  HESS = 96;
+
+  SG_READY = 208;
+
+  EV_CHARGE = 2;
+
+  HEATPUMP = 211;
+
+  HEADROD = 212;
+
+  SMART_PLUG = 213;
+
+  PLUG_THREE = 214;
+
+  DPU = 215;
+
+  SMART_LOAD = 216;
+
+  HOST = 254;
+
+  ERROR = 255;
+}
+
+enum TIME_TASK_MODE {
+  TIME_TASK_MODE_RESV = 0;
+
+  TIME_TASK_MODE_PER_WEEK = 1;
+
+  TIME_TASK_MODE_ONCE = 2;
+}
+
+enum TIME_TASK_TYPE {
+  TIME_TASK_TYPE_AC_CHG = 0;
+
+  TIME_TASK_TYPE_AC_DSG = 1;
+
+  TIME_TASK_TYPE_AC2_DSG = 2;
+
+  TIME_TASK_TYPE_DC_CHG = 3;
+
+  TIME_TASK_TYPE_DC2_CHG = 4;
+
+  TIME_TASK_TYPE_DC_DSG = 5;
+
+  TIME_TASK_TYPE_OIL_ON = 6;
+
+  TIME_TASK_TYPE_OIL_OFF = 7;
+
+  TIME_TASK_TYPE_USB_CHG = 8;
+
+  TIME_TASK_TYPE_USB_DSG = 9;
+
+  TIME_TASK_TYPE_AC_BYPASS = 10;
+
+  TIME_TASK_TYPE_AC_DSG_ONLY = 11;
+
+  TIME_TASK_TYPE_SHARING_SOC = 12;
+
+  TIME_TASK_TYPE_POWER_ON = 13;
+
+  TIME_TASK_TYPE_POWER_OFF = 14;
+
+  TIME_TASK_TYPE_THERMOSTATIC = 15;
+
+  TIME_TASK_TYPE_COOLING = 16;
+
+  TIME_TASK_TYPE_HEATING = 17;
+
+  TIME_TASK_TYPE_VENTING = 18;
+
+  TIME_TASK_TYPE_DEHUMIDIFYING = 19;
+
+  TIME_TASK_TYPE_LOAD_CTRL_OFF = 20;
+
+  TIME_TASK_TYPE_LOAD_CTRL_ON = 21;
+
+  TIME_TASK_TYPE_LOAD_CTRL_GRID = 22;
+
+  TIME_TASK_TYPE_LOAD_CTRL_BACKUP = 23;
+
+  TIME_TASK_TYPE_AC_DSG_SELF = 24;
+
+  TIME_TASK_TYPE_EV_CHG = 25;
+}
+
+enum TIME_TASK_DETAIL_TYPE {
+  TIME_TASK_DETAIL_IDLE = 0;
+
+  TIME_TASK_DETAIL_POW = 1;
+
+  TIME_TASK_DETAIL_TEMP = 2;
+
+  TIME_TASK_DETAIL_LEVEL = 3;
+
+  TIME_TASK_DETAIL_SOC = 4;
+
+  TIME_TASK_DETAIL_TYPE_TIME_TASK_DETAIL_HUMI = 5;
+
+  TIME_TASK_DETAIL_TYPE_TIME_TASK_DETAIL_MODE = 6;
+
+  TIME_TASK_DETAIL_TYPE_TIME_TASK_DETAIL_FAN = 7;
+
+  TIME_TASK_DETAIL_TYPE_TIME_TASK_DETAIL_SUBMODE = 8;
+
+  TIME_TASK_DETAIL_TYPE_TIME_TASK_DETAIL_UPPER_TEMP = 9;
+
+  TIME_TASK_DETAIL_TYPE_TIME_TASK_DETAIL_LOWER_TEMP = 10;
+
+  TIME_TASK_DETAIL_TYPE_TIME_TASK_DETAIL_ALLOW_FEED_GRID = 11;
+
+  TIME_TASK_DETAIL_TYPE_TIME_TASK_DETAIL_SWITCH_IDX = 12;
+
+  TIME_TASK_DETAIL_SWITCH_IDX_NUM = 13;
+}
+
+enum EDevEvChgMode {
+  EV_CHG_MODE_QUIK = 0;
+
+  EV_CHG_MODE_NORMAL = 1;
+
+  EV_CHG_MODE_SOLAR_INV = 2;
+
+  EV_CHG_MODE_STORE_INV = 3;
+}
+
+enum EDevEvChgSts {
+  EV_CHG_STS_NONE = 0;
+
+  EV_CHG_STS_AVAILABLE = 1;
+
+  EV_CHG_STS_PREPARING = 2;
+
+  EV_CHG_STS_CHARGING = 3;
+
+  EV_CHG_STS_SUSPENDED_EVSE = 4;
+
+  EV_CHG_STS_SUSPENDED_EV = 5;
+
+  EV_CHG_STS_FINISHING = 6;
+
+  EV_CHG_STS_FAULTED = 9;
+}
+
+enum EDevEVExpendCmd {
+  EDEV_EV_EXPEND_NONE = 0;
+
+  EDEV_EV_EXPEND_VEHICLE_SET = 1;
+
+  EDEV_EV_EXPEND_APP_CTRL = 2;
+}
+
+enum EDevSgReadyMode {
+  SG_AUTO = 0;
+
+  SG_MANUAL = 1;
+}
+
+enum Event {
+  EVENT_NONE = 0;
+
+  EVENT_RESET = 1;
+
+  EVENT_RECONNECT_SERVER = 2;
+
+  EVENT_CLEAR_HISTORY = 3;
+
+  EVENT_CLEAR_PARAM = 4;
+
+  EVENT_UNBIND_ALL_DEV = 5;
+
+  EVENT_BROADCAST_AUTO_BIND = 6;
+
+  EVENT_PARALLEL_MASTER_CONFLICT = 7;
+
+  EVENT_ENERGY_MASTER_CONFLICT = 8;
+}
+
+enum WorkSta {
+  STA_PRE = 0;
+
+  STA_RUN = 1;
+
+  STA_STOP = 2;
+
+  STA_ERR = 3;
+}

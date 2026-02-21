@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package app.src.main.java;
+
 enum HeatingRodCmdSet {
   NONE_CMD_SETS = 0;
 

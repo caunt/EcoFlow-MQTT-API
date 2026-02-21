@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+package ecoflow.corebiz.mqtt.proto.AppCommon;
+
+message AppBizDataRequest {
+  uint64 id = 1;
+
+  int32 appid = 2;
+
+  string lang = 3;
+
+  string platform = 4;
+
+  string version = 5;
+
+  string method = 6;
+
+  map<string, string> params = 7;
+}
+
+message AppBizDataResponse {
+  uint64 id = 1;
+
+  int32 appid = 2;
+
+  string lang = 3;
+
+  string platform = 4;
+
+  string version = 5;
+
+  string method = 6;
+
+  uint32 code = 7;
+
+  optional bytes data = 8;
+}
+
+enum Type {
+  RAW = 0;
+
+  JSON = 1;
+
+  PROTOBUF = 2;
+}
+
+enum AppId {
+  NONE_APPID = 0;
+
+  ECOFLOW = -1;
+
+  ECOFLOW_PRO = 777;
+
+  MONITOR = 666;
+}
+
+enum Method {
+  NONE_METHOD = 0;
+
+  GET_YJ751_SYSTEM_LATEST_QUOTA = 1;
+
+  YJ751_COMPOSE_NETWORK = 2;
+}
+
+enum AppCmdSets {
+  NONE_CMD_SETS = 0;
+
+  APP_CMD_SET = 810;
+}
+
+enum AppCmdId {
+  NONE_CMD_ID = 0;
+
+  APP_REQUEST_CMD_ID = 16;
+
+  APP_RESPONSE_CMD_ID = 17;
+}

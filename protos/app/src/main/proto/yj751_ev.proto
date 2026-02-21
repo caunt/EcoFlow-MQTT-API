@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package app.src.main.proto;
+
 message InstallmentPaymentServeBelone {
   SERVE_MIDDLEMEN serve_middlemen = 1;
 

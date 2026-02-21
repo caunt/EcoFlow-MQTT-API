@@ -20,18 +20,10 @@ option java_package = "com.google.protobuf";
 
 option objc_class_prefix = "GPB";
 
-message Type {
+message Option {
   string name = 1;
 
-  repeated Field fields = 2;
-
-  repeated string oneofs = 3;
-
-  repeated Option options = 4;
-
-  SourceContext source_context = 5;
-
-  Syntax syntax = 6;
+  Any value = 2;
 }
 
 message Field {
@@ -106,16 +98,18 @@ message Field {
   }
 }
 
-message Enum {
+message Type {
   string name = 1;
 
-  repeated EnumValue enumvalue = 2;
+  repeated Field fields = 2;
 
-  repeated Option options = 3;
+  repeated string oneofs = 3;
 
-  SourceContext source_context = 4;
+  repeated Option options = 4;
 
-  Syntax syntax = 5;
+  SourceContext source_context = 5;
+
+  Syntax syntax = 6;
 }
 
 message EnumValue {
@@ -126,10 +120,16 @@ message EnumValue {
   repeated Option options = 3;
 }
 
-message Option {
+message Enum {
   string name = 1;
 
-  Any value = 2;
+  repeated EnumValue enumvalue = 2;
+
+  repeated Option options = 3;
+
+  SourceContext source_context = 4;
+
+  Syntax syntax = 5;
 }
 
 enum Syntax {

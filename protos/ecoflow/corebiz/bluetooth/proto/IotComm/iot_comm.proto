@@ -1,0 +1,556 @@
+syntax = "proto3";
+
+package ecoflow.corebiz.bluetooth.proto.IotComm;
+
+message ModuleInfo {
+  uint32 product_type = 1;
+
+  uint32 product_detail = 2;
+
+  string module_sn = 3;
+
+  string cpuid = 4;
+
+  uint32 running_sta = 5;
+
+  uint32 addr = 6;
+
+  uint32 d_addr = 7;
+
+  uint32 app_ver = 8;
+
+  uint32 loader_ver = 9;
+
+  string device_sn = 10;
+}
+
+message ModuleClusterInfo {
+  repeated ModuleInfo modules = 1;
+
+  optional uint32 total_page = 2;
+
+  optional uint32 page = 3;
+
+  optional uint32 pack_ver = 4;
+}
+
+message AuthTypeAck {
+  uint32 status = 1;
+
+  uint32 version = 2;
+
+  uint32 auth_type = 3;
+}
+
+message StartBindAck {
+  uint32 result = 1;
+
+  string random_code = 2;
+
+  string signature_digest = 3;
+}
+
+message ConfirmBind {
+  string random_code = 1;
+
+  string user_info_en = 2;
+}
+
+message ConfirmBindAck {
+  uint32 result = 1;
+
+  string user_token = 2;
+}
+
+message RefreshToken {
+  string random_code = 1;
+
+  string user_info_en = 2;
+}
+
+message RefreshTokenAck {
+  uint32 result = 1;
+
+  string user_token = 2;
+}
+
+message UnbindReq {
+  string randomCode = 1;
+
+  string userInfoEn = 2;
+}
+
+message UnbindReqAck {
+  uint32 result = 1;
+}
+
+message Authentication {
+  uint32 user_role = 1;
+
+  string user_token = 2;
+}
+
+message AuthenticationAck {
+  uint32 result = 1;
+}
+
+message PackLogCmd {
+  repeated uint32 idx = 1;
+}
+
+message PackLogCmdAck {
+  uint32 result = 1;
+}
+
+message IotAPInfoGetAck {
+  string ssid_len = 1;
+
+  string ssid = 2;
+
+  string passwd_len = 3;
+
+  string password = 4;
+
+  string channel = 5;
+
+  string ecn = 6;
+
+  string max_conn = 7;
+
+  string ssid_hidden = 8;
+
+  string has_modify = 9;
+}
+
+message IotAPInfoSet {
+  string ssid_len = 1;
+
+  string ssid = 2;
+
+  string passwd_len = 3;
+
+  string password = 4;
+
+  string channel = 5;
+
+  string ecn = 6;
+
+  string max_conn = 7;
+
+  string ssid_hidden = 8;
+}
+
+message IotAPInfoSetAck {
+  uint32 state = 1;
+}
+
+message Iot4GInfoGet {
+}
+
+message Iot4GInfoGetAck {
+  sint32 enable = 1;
+
+  sint32 usb_con = 2;
+
+  sint32 pdp_active = 3;
+
+  string sim_iccid = 4;
+
+  string sim_imsi = 5;
+
+  string modem_imei = 6;
+
+  string modem_ver = 7;
+
+  string network_act = 8;
+
+  string network_sopr = 9;
+
+  string network_nopr = 10;
+
+  string network_band = 11;
+
+  Iot4GRat network_rat = 12;
+
+  Iot4GReg network_reg = 13;
+
+  sint32 signal_rssi = 14;
+
+  Iot4GErrCode err_code = 15;
+
+  sint32 singal_ico = 16;
+
+  uint32 ip = 17;
+}
+
+message Iot4GApnGet {
+}
+
+message Iot4GApnGetAck {
+  string apn = 1;
+
+  string user = 2;
+
+  string password = 3;
+
+  Iot4GAuth auth = 4;
+
+  Iot4GIPType ip_type = 5;
+}
+
+message Iot4GApnSet {
+  string apn = 1;
+
+  string user = 2;
+
+  string password = 3;
+
+  Iot4GAuth auth = 4;
+
+  Iot4GIPType ip_type = 5;
+}
+
+message Iot4GApnSetAck {
+  sint32 result = 1;
+}
+
+message Iot4GEnableSet {
+  sint32 enable = 1;
+}
+
+message Iot4GEnableSetAck {
+  sint32 result = 1;
+}
+
+message ConfigPowerState {
+  int32 power_state = 1;
+}
+
+message ConfigPowerStateAck {
+  int32 state = 1;
+}
+
+message IotSetScanDev {
+}
+
+message IotSetScanDevAck {
+  int32 result = 1;
+}
+
+message IotDeviceFind {
+  string dev_id = 1;
+
+  string random = 2;
+
+  string sign = 3;
+
+  int32 aes_key_type = 4;
+}
+
+message IotDeviceFindAck {
+  string user_id = 1;
+
+  string dev_id = 2;
+
+  string secretkey_sign = 3;
+}
+
+message IotReportUserId {
+  string user_id = 1;
+}
+
+message ApFollowInfoListGet {
+}
+
+message ApFollowInfoAck {
+  uint32 followSwitch = 1;
+
+  uint32 packLostRate = 2;
+
+  int32 rssi = 3;
+
+  int32 ipAddr = 4;
+
+  string bssid = 5;
+
+  string ssid = 6;
+
+  string pwd = 7;
+
+  uint32 isConnect = 8;
+
+  uint32 isEnable = 9;
+
+  uint32 isFound = 10;
+
+  uint32 retryCnt = 11;
+
+  uint32 channel = 12;
+
+  uint32 disconnectReason = 13;
+
+  uint32 connectTimeStamp = 14;
+}
+
+message ApFollowInfoListAck {
+  repeated ApFollowInfoAck list = 1;
+}
+
+message ApFollowInfoSet {
+  uint32 follow_switch = 1;
+
+  uint32 ssidLen = 2;
+
+  string ssid = 3;
+}
+
+message ApFollowInfoDelete {
+  uint32 ssidLen = 1;
+
+  string ssid = 2;
+}
+
+message ApFollowCmdAck {
+  int32 result = 1;
+}
+
+message BleOtaMode {
+  uint32 en = 1;
+
+  uint32 connIntr = 2;
+}
+
+message BleOtaModeAck {
+  uint32 ver = 1;
+
+  uint32 err = 2;
+
+  uint32 connIntr = 3;
+}
+
+message BleOtaPacketInfo {
+  uint32 packetVer = 1;
+
+  uint32 packetSize = 2;
+
+  bool forceUpgradeFlag = 3;
+
+  uint32 crc16 = 4;
+
+  optional string md5 = 5;
+
+  optional string eccSign = 6;
+
+  optional string pEccKey = 7;
+}
+
+message BleOtaPacketInfoAck {
+  uint32 ret = 1;
+
+  uint32 transType = 2;
+
+  uint32 encType = 3;
+}
+
+message BleOtaDataReq {
+  uint32 offset = 1;
+
+  uint32 packetSize = 2;
+
+  uint32 frameSize = 3;
+
+  uint32 transIntr = 4;
+
+  uint32 transType = 5;
+
+  uint32 bitMapCount = 6;
+
+  optional bytes bitMap = 7;
+}
+
+message BleOtaProgressReq {
+}
+
+message BleOtaProgressAck {
+  uint32 sta = 1;
+
+  uint32 upgradSta = 2;
+
+  uint32 progress = 3;
+
+  int32 error = 4;
+}
+
+enum IotCmdSets {
+  IOT_NONE_CMD_SETS = 0;
+
+  IOT_COMM_CMD_SETS = 53;
+}
+
+enum IotCmdId {
+  IOT_CMD_ID_NONE = 0;
+
+  IOT_CMD_ID_BLE_OTA_MODE_ENTER = 22;
+
+  IOT_CMD_ID_BLE_OTA_PACKET_INFO = 23;
+
+  IOT_CMD_ID_BLE_OTA_DATA_REQ = 24;
+
+  IOT_CMD_ID_BLE_OTA_PROGRESS = 25;
+
+  IOT_CMD_ID_AP_FOLLOW_UPDATE_WIFI_LIST = 38;
+
+  IOT_CMD_ID_AP_FOLLOW_SET_SWITCH = 39;
+
+  IOT_CMD_ID_AP_FOLLOW_DELETE_WIFI = 40;
+
+  IOT_CMD_ID_SET_SCAN_DEVICE = 64;
+
+  IOT_CMD_ID_DEVICE_FIND = 65;
+
+  IOT_CMD_ID_REPORT_USERID = 66;
+
+  IOT_CMD_ID_MODULE_INFO = 113;
+
+  IOT_CMD_ID_PACK_LOG = 114;
+
+  IOT_CMD_ID_GET_4G_INFO = 115;
+
+  IOT_CMD_ID_ENABLE_4G = 117;
+
+  IOT_CMD_ID_CONFIG_POWER_STATE = 118;
+
+  IOT_CMD_ID_UNBIND = 132;
+
+  IOT_CMD_ID_AUTH_TYPE = 137;
+
+  IOT_CMD_ID_4G_GET_APN = 150;
+
+  IOT_CMD_ID_4G_SET_APN = 151;
+
+  IOT_CMD_ID_START_BIND = 168;
+
+  IOT_CMD_ID_CONFIRM_BIND = 169;
+
+  IOT_CMD_ID_REFRESH_TOKEN = 170;
+
+  IOT_CMD_ID_AUTHENTICATION = 171;
+}
+
+enum UserRoleType {
+  UserRoleInstaller = 0;
+
+  UserRoleNormal = 1;
+
+  UserRoleShared = 2;
+
+  UserRoleUnknown = 255;
+}
+
+enum IotErrCode {
+  Success = 0;
+
+  ReqParamErr = 3;
+
+  DeviceErr = 4;
+
+  DeviceBounded = 5;
+
+  PBDecodeErr = 6;
+
+  DecodeErr = 7;
+
+  RandomCodeErr = 8;
+
+  UserInfoErr = 9;
+
+  SaveUserErr = 10;
+
+  SaveTokenErr = 11;
+
+  UserNotExist = 12;
+
+  SNNotReady = 13;
+
+  SecretKeyNotReady = 14;
+
+  UserErr = 15;
+
+  TokenErr = 16;
+
+  PayloadVerErr = 17;
+
+  SNErr = 18;
+
+  DevWriteErr = 19;
+
+  TokenExpire = 20;
+
+  Others = 255;
+}
+
+enum Iot4GErrCode {
+  MODEM_ERR_NONE = 0;
+
+  MODEM_ERR_SIM_NOT_INSERTED = 1;
+
+  MODEM_ERR_PIN_REQUIRED = 2;
+
+  MODEM_ERR_PUK_REQUIRED = 3;
+
+  MODEM_ERR_SIM_ERROR = 4;
+
+  MODEM_ERR_DISABLE = 5;
+
+  MODEM_ERR_NOT_OPERATOR = 6;
+
+  MODEM_ERR_USB_DISCONNECT = 7;
+
+  MODEM_ERR_UNKNOWN_DEVICE = 8;
+
+  MODEM_ERR_CTL_ERROR = 9;
+}
+
+enum Iot4GRat {
+  RAT_NONE = 0;
+
+  RAT_2G = 2;
+
+  RAT_3G = 3;
+
+  RAT_4G = 4;
+}
+
+enum Iot4GReg {
+  REG_STAT_SEARCHING = 0;
+
+  REG_STAT_REGISTERED = 1;
+
+  REG_STAT_NOTREGISTERED = 2;
+
+  REG_STAT_DENIED = 3;
+
+  REG_STAT_UNKNOWN = 4;
+
+  REG_STAT_ROAMING = 5;
+}
+
+enum Iot4GAuth {
+  APN_AUTH_NONE = 0;
+
+  APN_AUTH_PAP = 1;
+
+  APN_AUTH_CHAP = 2;
+
+  APN_AUTH_PAP_CHAP = 3;
+}
+
+enum Iot4GIPType {
+  IP_UNKNOWN = 0;
+
+  IPV4 = 1;
+
+  IPV6 = 2;
+
+  IPV4V6 = 3;
+}

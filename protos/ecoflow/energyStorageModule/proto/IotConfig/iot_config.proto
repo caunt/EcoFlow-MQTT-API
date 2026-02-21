@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package ecoflow.energyStorageModule.proto.IotConfig;
+
+message CommonAck {
+  uint32 result = 1;
+}
+
+message ShareCfgNetInfo {
+  string wifi_ssid = 1;
+
+  string wifi_password = 2;
+
+  string https_url = 3;
+}
+
+message CfgNetDeviceList {
+  repeated string device_sn = 1;
+
+  optional ShareCfgNetInfo share_cfg_net_info = 2;
+}
