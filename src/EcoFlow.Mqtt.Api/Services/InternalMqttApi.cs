@@ -1,3 +1,4 @@
+using Ecoflow.Corebiz.Mqtt.Proto.Common;
 using EcoFlow.Mqtt.Api.Extensions;
 using EcoFlow.Mqtt.Api.Models;
 using EcoFlow.Mqtt.Api.Session;
@@ -38,7 +39,7 @@ public class InternalMqttApi : IHostedService
     public async Task StopAsync(CancellationToken cancellationToken)
     {
         foreach (var state in _states.Values)
-            await state.Client.DisconnectAsync();
+            await state.Client.DisconnectAsync(cancellationToken: cancellationToken);
 
         _states.Clear();
     }
@@ -62,7 +63,7 @@ public class InternalMqttApi : IHostedService
                 optionsBuilder = optionsBuilder.WithTlsOptions(new MqttClientTlsOptions { UseTls = true });
 
             var options = optionsBuilder.Build();
-            await state.Client.ConnectAsync(options);
+            await state.Client.ConnectAsync(options, cancellationToken);
         }
 
         lock (_states)
@@ -79,7 +80,7 @@ public class InternalMqttApi : IHostedService
         // .WithTopicFilter(filter => filter.WithTopic($"/open/${mqttConfiguration.Username}/${deviceSerialNumber}/set"))
 
         var subscribeOptions = subscribeOptionsBuilder.Build();
-        await state.Client.SubscribeAsync(subscribeOptions);
+        await state.Client.SubscribeAsync(subscribeOptions, cancellationToken);
     }
 
     private MqttState GetMqttState(ISession session)
@@ -124,7 +125,14 @@ public class InternalMqttApi : IHostedService
             if (!TryParse(eventArgs.ApplicationMessage.Payload, out var payload))
             {
                 Console.WriteLine($"⚠️ Binary payload received for {serialNumber}");
-                Console.WriteLine(Convert.ToHexString(eventArgs.ApplicationMessage.Payload.ToArray()));
+                var headers = Send_Header_Msg.Parser.ParseFrom(eventArgs.ApplicationMessage.Payload);
+
+                foreach (var header in headers.Decrypted)
+                {
+                    var message = header.Pdata.AsEcoFlowMessage();
+                    Console.WriteLine(message.ToStringWithTitle());
+                }
+
                 return Task.CompletedTask;
             }
 
