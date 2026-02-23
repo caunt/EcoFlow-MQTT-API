@@ -1,5 +1,4 @@
 using Ecoflow.Corebiz.Mqtt.Proto.Common;
-using Ecoflow.EnergyStorageModule.Proto.Pd335BmsBp;
 using EcoFlow.Mqtt.Api.Extensions;
 using EcoFlow.Mqtt.Api.Models;
 using EcoFlow.Mqtt.Api.Session;
@@ -136,8 +135,11 @@ public class InternalMqttApi : IHostedService
                 foreach (var header in headers.Decrypted)
                 {
                     var message = header.Pdata.AsEcoFlowMessage(header.CmdFunc, header.CmdId);
+                    var messageName = message.GetType().Name;
 
-                    if (message is BMSHeartBeatReport)
+                    if (messageName.EndsWith("DisplayPropertyUpload", StringComparison.OrdinalIgnoreCase))
+                        nodes.Add(message.ToJson());
+                    else if (messageName.Contains("HeartBeatReport", StringComparison.OrdinalIgnoreCase))
                         nodes.Add(message.ToJson());
                     else
                         Console.WriteLine($"⚠️ Unsupported binary message received from {serialNumber}: {message.ToStringWithTitle()}");
