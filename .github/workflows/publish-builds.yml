@@ -1,130 +1,68 @@
 name: Publish Builds
-
 on:
   workflow_dispatch:
   push:
     branches: [ main ]
   release:
-    types:
-      - created
+    types: [ created ]
 
 jobs:
-  publish_windows:
-    name: Publish ${{ matrix.runtimeIdentifier }}
-    runs-on: windows-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        runtimeIdentifier: [ win-x64, win-arm64, win-x86 ]
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v6
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v5
-        with:
-          dotnet-version: '10'
-
-      - name: Publish Application
-        run: dotnet publish src/EcoFlow.Mqtt.Api/EcoFlow.Mqtt.Api.csproj -c Release -r ${{ matrix.runtimeIdentifier }} -o ./publish/${{ matrix.runtimeIdentifier }}
-
-      - name: Upload Build Artifact
-        uses: actions/upload-artifact@v6
-        with:
-          name: EcoFlow-Mqtt-Api-${{ matrix.runtimeIdentifier }}
-          path: ./publish/${{ matrix.runtimeIdentifier }}
-
-  publish_macos:
-    name: Publish ${{ matrix.runtimeIdentifier }}
-    runs-on: ${{ matrix.operatingSystem }}
+  publish:
+    name: Publish ${{ matrix.rid }}
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - operatingSystem: macos-latest
-            runtimeIdentifier: osx-arm64
-          - operatingSystem: macos-15-intel
-            runtimeIdentifier: osx-x64
+          # Windows
+          - { os: windows-latest, rid: win-x64 }
+          - { os: windows-latest, rid: win-arm64 }
+          - { os: windows-latest, rid: win-x86 }
+          
+          # macOS
+          - { os: macos-latest, rid: osx-arm64 }
+          - { os: macos-15-intel, rid: osx-x64 }
+          
+          # Ubuntu (glibc)
+          - { os: ubuntu-latest, rid: linux-x64 }
+          - { os: ubuntu-24.04-arm, rid: linux-arm64 }
+          - { os: ubuntu-24.04-arm, rid: linux-arm }
+          
+          # Alpine (musl)
+          - { os: ubuntu-latest, rid: linux-musl-x64, is_alpine: true }
+          - { os: ubuntu-24.04-arm, rid: linux-musl-arm64, is_alpine: true }
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v6
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v5
-        with:
-          dotnet-version: '10'
-
-      - name: Publish Application
-        run: dotnet publish src/EcoFlow.Mqtt.Api/EcoFlow.Mqtt.Api.csproj -c Release -r ${{ matrix.runtimeIdentifier }} -o ./publish/${{ matrix.runtimeIdentifier }}
-
-      - name: Upload Build Artifact
-        uses: actions/upload-artifact@v6
-        with:
-          name: EcoFlow-Mqtt-Api-${{ matrix.runtimeIdentifier }}
-          path: ./publish/${{ matrix.runtimeIdentifier }}
-
-  publish_ubuntu:
-    name: Publish ${{ matrix.runtimeIdentifier }}
-    runs-on: ${{ matrix.operatingSystem }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - operatingSystem: ubuntu-latest
-            runtimeIdentifier: linux-x64
-          - operatingSystem: ubuntu-24.04-arm
-            runtimeIdentifier: linux-arm64
-          - operatingSystem: ubuntu-24.04-arm
-            runtimeIdentifier: linux-arm
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v6
-
-      - name: Setup .NET
+        if: ${{ !matrix.is_alpine }}
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '10'
 
       - name: Install Linux Prerequisites
+        if: ${{ runner.os == 'Linux' && !matrix.is_alpine }}
         run: |
           sudo apt-get update
           
-          if [ "${{ matrix.runtimeIdentifier }}" = "linux-arm" ]; then
+          if [ "${{ matrix.rid }}" = "linux-arm" ]; then
             sudo dpkg --add-architecture armhf
             sudo apt-get update
             sudo apt-get install -y clang zlib1g-dev protobuf-compiler libc6-dev:armhf libstdc++-13-dev:armhf gcc-arm-linux-gnueabihf
           else
             sudo apt-get install -y clang zlib1g-dev protobuf-compiler
           fi
+          
+          echo "PROTOC_BUILD_ARGUMENT=-p:Protobuf_ProtocFullPath=/usr/bin/protoc" >> $GITHUB_ENV
 
-      - name: Set Protoc Argument For Linux
-        run: echo "PROTOC_BUILD_ARGUMENT=-p:Protobuf_ProtocFullPath=/usr/bin/protoc" >> $GITHUB_ENV
+      - name: Publish Application (Host)
+        if: ${{ !matrix.is_alpine }}
+        run: dotnet publish src/EcoFlow.Mqtt.Api/EcoFlow.Mqtt.Api.csproj -c Release -r ${{ matrix.rid }} -o ./publish/${{ matrix.rid }} ${{ env.PROTOC_BUILD_ARGUMENT }}
 
-      - name: Publish Application
-        run: dotnet publish src/EcoFlow.Mqtt.Api/EcoFlow.Mqtt.Api.csproj -c Release -r ${{ matrix.runtimeIdentifier }} -o ./publish/${{ matrix.runtimeIdentifier }} ${{ env.PROTOC_BUILD_ARGUMENT }}
-
-      - name: Upload Build Artifact
-        uses: actions/upload-artifact@v6
-        with:
-          name: EcoFlow-Mqtt-Api-${{ matrix.runtimeIdentifier }}
-          path: ./publish/${{ matrix.runtimeIdentifier }}
-
-  publish_alpine_musl:
-    name: Publish ${{ matrix.runtimeIdentifier }}
-    runs-on: ${{ matrix.operatingSystem }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - operatingSystem: ubuntu-latest
-            runtimeIdentifier: linux-musl-x64
-          - operatingSystem: ubuntu-24.04-arm
-            runtimeIdentifier: linux-musl-arm64
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v6
-
-      - name: Publish Application
+      - name: Publish Application (Alpine Container)
+        if: ${{ matrix.is_alpine }}
         run: |
           docker run --rm \
             --volume "${{ github.workspace }}:/workspace" \
@@ -133,13 +71,13 @@ jobs:
             sh -c "apk add --no-cache clang build-base zlib-dev protoc grpc-plugins && \
                    dotnet publish src/EcoFlow.Mqtt.Api/EcoFlow.Mqtt.Api.csproj \
                    -c Release \
-                   -r ${{ matrix.runtimeIdentifier }} \
-                   -o ./publish/${{ matrix.runtimeIdentifier }} \
+                   -r ${{ matrix.rid }} \
+                   -o ./publish/${{ matrix.rid }} \
                    -p:Protobuf_ProtocFullPath=/usr/bin/protoc \
                    -p:gRPC_PluginFullPath=/usr/bin/grpc_csharp_plugin"
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v6
         with:
-          name: EcoFlow-Mqtt-Api-${{ matrix.runtimeIdentifier }}
-          path: ./publish/${{ matrix.runtimeIdentifier }}
+          name: EcoFlow-Mqtt-Api-${{ matrix.rid }}
+          path: ./publish/${{ matrix.rid }}
