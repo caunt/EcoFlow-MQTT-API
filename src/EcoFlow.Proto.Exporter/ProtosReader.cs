@@ -9,7 +9,6 @@ namespace EcoFlow.Proto.Exporter;
 
 public static class ProtosReader
 {
-    // "has\0get\0set\0clear\0add\0remove"
     private static readonly string[] ReservedPrefixes = ["has", "get", "set", "clear", "add", "remove"];
 
     public record Item(FileDescriptorProto FileDescriptorProto, string TypeDescriptor)
