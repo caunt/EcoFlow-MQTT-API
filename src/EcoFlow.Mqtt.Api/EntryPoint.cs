@@ -21,7 +21,13 @@ builder.Logging.AddFilter("Microsoft.AspNetCore.Hosting.Diagnostics", LogLevel.E
 builder.Services.AddHttpClient();
 builder.Services.ConfigureAnonymousHttpClient();
 builder.Services.ConfigureEcoFlowEndpoints();
-builder.Services.ConfigureEcoFlowAuthentication();
+builder.Services.ConfigureEcoFlowAuthentication(errorHandler: () =>
+{
+    if (OperatingSystem.IsWindows())
+        Console.ReadLine();
+
+    Environment.Exit(1);
+});
 builder.Services.AddSingleton<InternalHttpApi>();
 builder.Services.AddSingleton<InternalMqttApi>();
 builder.Services.AddHostedService(serviceProvider => serviceProvider.GetRequiredService<InternalMqttApi>());
