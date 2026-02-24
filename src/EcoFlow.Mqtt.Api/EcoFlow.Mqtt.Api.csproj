@@ -5,10 +5,15 @@
         <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-		<PublishAot>true</PublishAot>
     </PropertyGroup>
-    
-    <ItemGroup>
+
+	<PropertyGroup>
+		<PublishAot>true</PublishAot>
+		<PublishIISAssets>false</PublishIISAssets>
+		<AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+	</PropertyGroup>
+
+	<ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
         <PackageReference Include="Google.Protobuf" Version="3.33.5" />
 		<PackageReference Include="MQTTnet" Version="5.1.0.1559" />
