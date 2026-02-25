@@ -74,4 +74,10 @@ app.MapGet("/{serialNumber}", (HttpRequest httpRequest, string serialNumber) =>
         ? Results.Text(string.Join(',', mqttApi.Devices.Keys), statusCode: StatusCodes.Status404NotFound)
         : Results.Text($"Device not found. Existing serial numbers: {string.Join(',', mqttApi.Devices.Keys)}", statusCode: StatusCodes.Status404NotFound));
 
+app.Lifetime.ApplicationStarted.Register(() =>
+{
+    foreach (var address in app.Urls)
+        Console.WriteLine($"🌐 Listening on: {address}");
+});
+
 app.Run();
