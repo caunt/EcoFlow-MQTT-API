@@ -5,6 +5,7 @@ using EcoFlow.Mqtt.Api.Json;
 using EcoFlow.Mqtt.Api.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -14,6 +15,8 @@ using System.Text.Json;
 Console.OutputEncoding = Encoding.UTF8;
 
 var builder = WebApplication.CreateSlimBuilder(args);
+
+builder.Configuration.Sources.Insert(0, new MemoryConfigurationSource { InitialData = new Dictionary<string, string?> { ["Http_Ports"] = "8080" } });
 
 builder.Logging.AddFilter(nameof(Microsoft), LogLevel.Warning);
 builder.Logging.AddFilter(nameof(System), LogLevel.Warning);
