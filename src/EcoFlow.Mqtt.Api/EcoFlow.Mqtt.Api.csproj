@@ -12,7 +12,13 @@
 		<PublishIISAssets>false</PublishIISAssets>
 		<AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
 	</PropertyGroup>
-
+	
+	<Target Name="RemoveAspNetCoreInProcessModule" AfterTargets="ComputeFilesToPublish">
+		<ItemGroup>
+			<ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="'%(FileName)%(Extension)' == 'aspnetcorev2_inprocess.dll'" />
+		</ItemGroup>
+	</Target>
+	
 	<ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
         <PackageReference Include="Google.Protobuf" Version="3.33.5" />
