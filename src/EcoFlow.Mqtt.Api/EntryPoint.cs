@@ -1,6 +1,7 @@
 ﻿using EcoFlow.Mqtt.Api.Configuration;
 using EcoFlow.Mqtt.Api.Configuration.Authentication;
 using EcoFlow.Mqtt.Api.Extensions;
+using EcoFlow.Mqtt.Api.Json;
 using EcoFlow.Mqtt.Api.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -61,14 +62,14 @@ foreach (var device in devices)
 
 app.MapGet("/", (HttpRequest httpRequest) =>
     httpRequest.Query.ContainsKey("flat")
-        ? Results.Text(string.Join('\n', JsonSerializer.SerializeToNode(mqttApi.Devices).Flatten()))
-        : Results.Json(mqttApi.Devices));
+        ? Results.Text(string.Join('\n', JsonSerializer.SerializeToNode(mqttApi.Devices, ApplicationJsonContext.Default.IReadOnlyDictionaryStringJsonNode).Flatten()))
+        : Results.Json(mqttApi.Devices, ApplicationJsonContext.Default.IReadOnlyDictionaryStringJsonNode));
 
 app.MapGet("/{serialNumber}", (HttpRequest httpRequest, string serialNumber) =>
     mqttApi.Devices.TryGetValue(serialNumber, out var device)
     ? httpRequest.Query.ContainsKey("flat")
-        ? Results.Text(string.Join('\n', JsonSerializer.SerializeToNode(mqttApi.Devices[serialNumber]).Flatten()))
-        : Results.Json(mqttApi.Devices[serialNumber])
+        ? Results.Text(string.Join('\n', mqttApi.Devices[serialNumber].Flatten()))
+        : Results.Json(mqttApi.Devices[serialNumber], ApplicationJsonContext.Default.JsonNode)
     : httpRequest.Query.ContainsKey("flat")
         ? Results.Text(string.Join(',', mqttApi.Devices.Keys), statusCode: StatusCodes.Status404NotFound)
         : Results.Text($"Device not found. Existing serial numbers: {string.Join(',', mqttApi.Devices.Keys)}", statusCode: StatusCodes.Status404NotFound));

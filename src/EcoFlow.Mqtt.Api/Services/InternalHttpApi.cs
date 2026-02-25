@@ -1,6 +1,7 @@
 using EcoFlow.Mqtt.Api.Configuration;
 using EcoFlow.Mqtt.Api.Configuration.Authentication;
 using EcoFlow.Mqtt.Api.Exceptions;
+using EcoFlow.Mqtt.Api.Json;
 using EcoFlow.Mqtt.Api.Models;
 using EcoFlow.Mqtt.Api.Session;
 using Microsoft.Extensions.Options;
@@ -9,11 +10,27 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace EcoFlow.Mqtt.Api.Services;
 
 public class InternalHttpApi(IOptions<EcoFlowConfiguration> options, HttpClient httpClient)
 {
+    internal record EcoFlowOAuthBundle(
+        [property: JsonPropertyName("bundleId")] string BundleId
+    );
+
+    internal record EcoFlowAuthenticationPayload(
+        [property: JsonPropertyName("os")] string Os,
+        [property: JsonPropertyName("scene")] string Scene,
+        [property: JsonPropertyName("appVersion")] string AppVersion,
+        [property: JsonPropertyName("osVersion")] string OsVersion,
+        [property: JsonPropertyName("password")] string Password,
+        [property: JsonPropertyName("oauth")] EcoFlowOAuthBundle Oauth,
+        [property: JsonPropertyName("email")] string Email,
+        [property: JsonPropertyName("userType")] string UserType
+    );
+
     public async Task<MqttConfiguration> GetMqttConfigurationAsync(ISession session, CancellationToken cancellationToken = default)
     {
         return session switch
@@ -31,7 +48,7 @@ public class InternalHttpApi(IOptions<EcoFlowConfiguration> options, HttpClient 
             var response = await httpClient.SendAsync(request, cancellationToken);
             response.EnsureSuccessStatusCode();
 
-            var node = await response.Content.ReadFromJsonAsync<JsonNode>(cancellationToken);
+            var node = await response.Content.ReadFromJsonAsync(ApplicationJsonContext.Default.JsonNode, cancellationToken);
 
             var url = node?["data"]?["url"]?.GetValue<string>();
             var port = int.Parse(node?["data"]?["port"]?.GetValue<string>() ?? "0");
@@ -68,7 +85,7 @@ public class InternalHttpApi(IOptions<EcoFlowConfiguration> options, HttpClient 
             var response = await httpClient.SendAsync(request, cancellationToken);
             response.EnsureSuccessStatusCode();
 
-            var node = await response.Content.ReadFromJsonAsync<JsonNode>(cancellationToken);
+            var node = await response.Content.ReadFromJsonAsync(ApplicationJsonContext.Default.JsonNode, cancellationToken);
             var devices = node?["data"] switch
             {
                 JsonArray jsonArray => jsonArray.Select(value => value?["sn"]?.GetValue<string>()).WhereNotNull(),
@@ -87,22 +104,23 @@ public class InternalHttpApi(IOptions<EcoFlowConfiguration> options, HttpClient 
             case AppAuthentication appAuthentication:
                 {
                     using var request = new HttpRequestMessage(HttpMethod.Post, new Uri(options.Value.AppApiUri, "/auth/login"));
-                    request.Content = JsonContent.Create(new
-                    {
-                        os = "linux",
-                        scene = "IOT_APP",
-                        appVersion = "1.0.0",
-                        osVersion = "5.15.90.1-kali-fake",
-                        password = Convert.ToBase64String(Encoding.UTF8.GetBytes(appAuthentication.Password)),
-                        oauth = new { bundleId = "com.ef.EcoFlow" },
-                        email = appAuthentication.Username,
-                        userType = "ECOFLOW"
-                    });
+                    request.Content = JsonContent.Create(
+                        new EcoFlowAuthenticationPayload(
+                            Os: "linux",
+                            Scene: "IOT_APP",
+                            AppVersion: "1.0.0",
+                            OsVersion: "5.15.90.1-kali-fake",
+                            Password: Convert.ToBase64String(Encoding.UTF8.GetBytes(appAuthentication.Password)),
+                            Oauth: new EcoFlowOAuthBundle("com.ef.EcoFlow"),
+                            Email: appAuthentication.Username,
+                            UserType: "ECOFLOW"
+                        ),
+                        ApplicationJsonContext.Default.EcoFlowAuthenticationPayload);
 
                     var response = await httpClient.SendAsync(request, cancellationToken);
                     response.EnsureSuccessStatusCode();
 
-                    var node = await response.Content.ReadFromJsonAsync<JsonNode>(cancellationToken);
+                    var node = await response.Content.ReadFromJsonAsync(ApplicationJsonContext.Default.JsonNode, cancellationToken);
 
                     var token = node?["data"]?["token"]?.GetValue<string>();
                     var userId = node?["data"]?["user"]?["userId"]?.GetValue<string>();

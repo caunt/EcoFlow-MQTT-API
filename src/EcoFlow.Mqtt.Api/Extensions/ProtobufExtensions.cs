@@ -20,7 +20,7 @@ public static class ProtobufExtensions
 
         public string ToStringWithTitle()
         {
-            return message.GetType() + " " + JsonSerializer.Serialize(message.ToJson(), _jsonSerializerOptions);
+            return message.GetType() + " " + message.ToJson().ToJsonString(_jsonSerializerOptions);
         }
     }
 
