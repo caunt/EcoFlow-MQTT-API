@@ -1,4 +1,4 @@
-# ⚡ EcoFlow MQTT API
+# ⚡ EcoFlow HTTP API
 
 [![Publish Builds](https://img.shields.io/github/actions/workflow/status/caunt/EcoFlow-MQTT-API/publish-builds.yml?style=for-the-badge&label=builds)](https://github.com/caunt/EcoFlow-MQTT-API/actions/workflows/publish-builds.yml)
 [![Publish Container](https://img.shields.io/github/actions/workflow/status/caunt/EcoFlow-MQTT-API/publish-container.yml?style=for-the-badge&label=container)](https://github.com/caunt/EcoFlow-MQTT-API/actions/workflows/publish-container.yml)
@@ -36,16 +36,18 @@ docker run --rm --pull=always \
 ### 💾 Binary
 
 ```sh
-ECOFLOW_USERNAME=you@example.com ECOFLOW_PASSWORD=your_password ./EcoFlow.Mqtt.Api
+ECOFLOW_USERNAME="you@example.com" ECOFLOW_PASSWORD="your_password" ./EcoFlow.Mqtt.Api
 ```
 
 ---
 
 ## 🔐 Configuration
 
+Set environment variables to configure.
+
 ### Authentication
 
-Set environment variables to configure. Choose **one**:
+Choose **one**:
 
 | Method | Variables |
 |--------|-----------|
@@ -55,12 +57,14 @@ Set environment variables to configure. Choose **one**:
 ### Optional overrides
 
 #### EcoFlow
+
 | Variable | Default |
 |----------|---------|
 | `ECOFLOW_APP_API_URI` | `https://api.ecoflow.com` |
 | `ECOFLOW_OPEN_API_URI` | `https://api-e.ecoflow.com` |
 
 #### Web Server
+
 | Variable | Default | Example |
 |----------|---------|---------|
 | `URLS` | `http://localhost:8080;` | `http://*:8080;` |
@@ -75,4 +79,4 @@ Set environment variables to configure. Choose **one**:
 | `GET /` | All devices |
 | `GET /{serialNumber}` | Single device |
 
-Add `?flat` for plain-text `key=value` output:
+Add `?flat` for plain-text `key=value` output.
