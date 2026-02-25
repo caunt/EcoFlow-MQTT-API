@@ -19,7 +19,7 @@
 		<StripSymbols>true</StripSymbols>
 		<IlcGenerateCompleteTypeMetadata>false</IlcGenerateCompleteTypeMetadata>
 		<IlcFoldSafeCast>true</IlcFoldSafeCast>
-		<TrimmerDefaultAction>link</TrimmerDefaultAction>
+		<TrimMode>link</TrimMode>
 	</PropertyGroup>
 
 	<PropertyGroup>
