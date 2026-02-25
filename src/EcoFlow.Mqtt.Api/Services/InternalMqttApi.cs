@@ -136,7 +136,7 @@ public class InternalMqttApi : IHostedService
                     var message = header.Pdata.AsEcoFlowMessage(header.CmdFunc, header.CmdId);
                     var messageName = message.GetType().Name;
 
-                    if (messageName.EndsWith("DisplayPropertyUpload", StringComparison.OrdinalIgnoreCase))
+                    if (messageName.EndsWith("PropertyUpload", StringComparison.OrdinalIgnoreCase))
                         nodes.Add(message.ToJson());
                     else if (messageName.Contains("HeartBeatReport", StringComparison.OrdinalIgnoreCase))
                         nodes.Add(message.ToJson());
@@ -158,10 +158,11 @@ public class InternalMqttApi : IHostedService
                 lock (_states)
                 {
                     foreach (var node in nodes)
+                    {
                         deviceNode.MergeWith(node);
+                        updated = true;
+                    }
                 }
-
-                updated = true;
             }
 
             Console.WriteLine(updated ? $"🖥  Updated state for {serialNumber}" : $"⚠️ No devices found for update: {topic} at {DateTime.Now:hh:mm:ss} => {string.Join("\n", nodes)}");
