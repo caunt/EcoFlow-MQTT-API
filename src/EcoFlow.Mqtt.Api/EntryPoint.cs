@@ -12,7 +12,7 @@ using System.Text.Json;
 
 Console.OutputEncoding = Encoding.UTF8;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateSlimBuilder(args);
 
 builder.Logging.AddFilter(nameof(Microsoft), LogLevel.Warning);
 builder.Logging.AddFilter(nameof(System), LogLevel.Warning);
