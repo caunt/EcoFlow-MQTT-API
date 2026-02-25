@@ -85,5 +85,5 @@ jobs:
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v6
         with:
-          name: ecoflow-mqtt-api-${{ matrix.rid }}
+          name: ${{ matrix.rid }}
           path: ./publish/${{ matrix.rid }}
