@@ -92,7 +92,7 @@ public class InternalMqttApi(InternalHttpApi httpApi) : IHostedService
 
             mqttClient.ApplicationMessageReceivedAsync += self.OnApplicationMessageReceived;
 
-            return new MqttState(mqttClient, []);
+            return new MqttState(mqttClient, new ConcurrentDictionary<DeviceInfo, JsonNode>(ReferenceEqualityComparer.Instance));
         }, this);
     }
 
