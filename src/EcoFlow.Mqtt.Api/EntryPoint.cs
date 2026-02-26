@@ -37,7 +37,10 @@ builder.Services.ConfigureEcoFlowAuthentication(errorHandler: () =>
 });
 builder.Services.AddSingleton<InternalHttpApi>();
 builder.Services.AddSingleton<InternalMqttApi>();
+builder.Services.AddSingleton<InternalMqttPolling>();
+
 builder.Services.AddHostedService(serviceProvider => serviceProvider.GetRequiredService<InternalMqttApi>());
+builder.Services.AddHostedService(serviceProvider => serviceProvider.GetRequiredService<InternalMqttPolling>());
 
 var app = builder.Build();
 
@@ -50,6 +53,7 @@ if (authentications.Length > 1)
 
 var httpApi = app.Services.GetRequiredService<InternalHttpApi>();
 var mqttApi = app.Services.GetRequiredService<InternalMqttApi>();
+var mqttPolling = app.Services.GetRequiredService<InternalMqttPolling>();
 
 Console.WriteLine("🔑 Authenticating with EcoFlow...");
 var session = await httpApi.AuthenticateAsync(authentication);
@@ -59,6 +63,8 @@ Console.WriteLine($"📱 Device List: \n\t* {string.Join("\n\t* ", devices.Selec
 
 var mqttConfiguration = await httpApi.GetMqttConfigurationAsync(session);
 Console.WriteLine($"🔌 Subscribing devices to MQTT ({mqttConfiguration.Url}:{mqttConfiguration.Port})...");
+
+using var disposable = mqttPolling.RegisterDevices(mqttConfiguration, devices);
 
 foreach (var device in devices)
     await mqttApi.SubscribeDeviceAsync(session, mqttConfiguration, device);

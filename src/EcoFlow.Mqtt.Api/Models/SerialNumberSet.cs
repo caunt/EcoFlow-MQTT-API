@@ -1,5 +1,6 @@
 ﻿using EcoFlow.Mqtt.Api.Configuration;
 using EcoFlow.Mqtt.Api.Json;
+using EcoFlow.Mqtt.Api.Session;
 using Microsoft.Extensions.Options;
 using Nito.AsyncEx;
 using System.Diagnostics.CodeAnalysis;
@@ -12,7 +13,7 @@ public class SerialNumberSet(IOptions<EcoFlowConfiguration> options, HttpClient 
     private readonly AsyncLock _lock = new();
     private readonly Dictionary<string, DeviceInfo> _cache = [];
 
-    public async Task<DeviceInfo> GetDeviceInfoAsync(string serialNumber, CancellationToken cancellationToken = default)
+    public async Task<DeviceInfo> GetDeviceInfoAsync(ISession session, string serialNumber, CancellationToken cancellationToken = default)
     {
         using var disposable = await _lock.LockAsync(cancellationToken);
 
@@ -40,7 +41,7 @@ public class SerialNumberSet(IOptions<EcoFlowConfiguration> options, HttpClient 
             if (string.IsNullOrWhiteSpace(title))
                 throw new InvalidOperationException($"Device information for serial number '{serialNumber}' does not contain a valid title.\n{data[0]}");
 
-            _cache[serialNumber] = deviceInfo = new DeviceInfo(serialNumber, title);
+            _cache[serialNumber] = deviceInfo = new DeviceInfo(session, serialNumber, title);
         }
 
         return deviceInfo;

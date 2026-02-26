@@ -1,8 +1,9 @@
-﻿using System.Text;
+﻿using EcoFlow.Mqtt.Api.Session;
+using System.Text;
 
 namespace EcoFlow.Mqtt.Api.Models;
 
-public record DeviceInfo(string SerialNumber, string Title)
+public record DeviceInfo(ISession Session, string SerialNumber, string Title)
 {
     private string? _cachedToString;
 

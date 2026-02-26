@@ -35,10 +35,10 @@ public class InternalHttpApi(IOptions<EcoFlowConfiguration> options, HttpClient 
     private SerialNumberSet? _serialNumberSet;
     private readonly AsyncLock _serialNumberSetLock = new();
 
-    public async Task<DeviceInfo> GetDeviceInfoAsync(string serialNumber, CancellationToken cancellationToken = default)
+    public async Task<DeviceInfo> GetDeviceInfoAsync(ISession session, string serialNumber, CancellationToken cancellationToken = default)
     {
         var serialNumberSet = await GetDeviceSerialNumberTemplatesAsync(cancellationToken);
-        return await serialNumberSet.GetDeviceInfoAsync(serialNumber, cancellationToken);
+        return await serialNumberSet.GetDeviceInfoAsync(session, serialNumber, cancellationToken);
     }
 
     public async Task<SerialNumberSet> GetDeviceSerialNumberTemplatesAsync(CancellationToken cancellationToken = default)
@@ -122,7 +122,7 @@ public class InternalHttpApi(IOptions<EcoFlowConfiguration> options, HttpClient 
                 _ => throw new DeviceListException($"Invalid device list received: {node}")
             };
 
-            var devices = await deviceSerialNumbers.Select(async deviceSerialNumber => await GetDeviceInfoAsync(deviceSerialNumber, cancellationToken)).WhenAll();
+            var devices = await deviceSerialNumbers.Select(async deviceSerialNumber => await GetDeviceInfoAsync(session, deviceSerialNumber, cancellationToken)).WhenAll();
 
             return [.. devices];
         }

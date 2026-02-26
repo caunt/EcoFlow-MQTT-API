@@ -83,6 +83,22 @@ public class InternalMqttApi(InternalHttpApi httpApi) : IHostedService
         await state.Client.SubscribeAsync(subscribeOptions, cancellationToken);
     }
 
+    public async Task SendMessageAsync(DeviceInfo deviceInfo, string topic, string payload, CancellationToken cancellationToken)
+    {
+        var message = new MqttApplicationMessageBuilder()
+            .WithTopic(topic)
+            .WithPayload(payload)
+            .Build();
+
+        foreach (var state in _states.Values)
+        {
+            if (!state.DeviceNodes.ContainsKey(deviceInfo))
+                continue;
+
+            await state.Client.PublishAsync(message, cancellationToken);
+        }
+    }
+
     private MqttState GetMqttState(ISession session)
     {
         return _states.GetOrAdd(session, static (_, self) =>
@@ -122,7 +138,7 @@ public class InternalMqttApi(InternalHttpApi httpApi) : IHostedService
                 return;
             }
 
-            var deviceInfo = await httpApi.GetDeviceInfoAsync(serialNumber);
+            var deviceInfo = _states.Values.Select(state => state.DeviceNodes.Keys.Single(device => device.SerialNumber == serialNumber)).Single();
             var nodes = new List<JsonNode>(1);
 
             if (TryParse(eventArgs.ApplicationMessage.Payload, out var payload))

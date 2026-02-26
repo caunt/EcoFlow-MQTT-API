@@ -2,6 +2,8 @@
   <Folder Name="/src/">
     <Project Path="src/EcoFlow.Mqtt.Api/EcoFlow.Mqtt.Api.csproj" />
     <Project Path="src/EcoFlow.Mqtt.Api.Analyzers/EcoFlow.Mqtt.Api.Analyzers.csproj" />
-    <Project Path="src/EcoFlow.Proto.Exporter/EcoFlow.Proto.Exporter.csproj" />
+    <Project Path="src/EcoFlow.Exporter.Protos/EcoFlow.Exporter.Protos.csproj" />
+    <Project Path="src/EcoFlow.Exporter.Models/EcoFlow.Exporter.Models.csproj" />
+    <Project Path="src/EcoFlow.Exporter.Common/EcoFlow.Exporter.Common.csproj" />
   </Folder>
 </Solution>
