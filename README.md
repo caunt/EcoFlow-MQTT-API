@@ -59,7 +59,7 @@ Choose **one**:
 
 | Variable | Default | Example |
 |----------|---------|---------|
-| `ECOFLOW_VERBOSE_LOGGING` | `` | `true` |
+| `ECOFLOW_VERBOSE_LOGGING` | `false` | `true` |
 
 ### Polling
 
