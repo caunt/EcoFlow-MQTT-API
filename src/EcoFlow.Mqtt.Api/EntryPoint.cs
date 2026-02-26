@@ -55,7 +55,7 @@ Console.WriteLine("🔑 Authenticating with EcoFlow...");
 var session = await httpApi.AuthenticateAsync(authentication);
 
 var devices = await httpApi.GetDevicesAsync(session);
-Console.WriteLine($"📱 Device List: {string.Join(", ", devices)}");
+Console.WriteLine($"📱 Device List: \n\t* {string.Join("\n\t* ", devices)}");
 
 var mqttConfiguration = await httpApi.GetMqttConfigurationAsync(session);
 Console.WriteLine($"🔌 Subscribing devices to MQTT ({mqttConfiguration.Url}:{mqttConfiguration.Port})...");
