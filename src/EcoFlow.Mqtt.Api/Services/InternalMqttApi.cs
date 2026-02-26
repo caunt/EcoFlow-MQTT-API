@@ -12,7 +12,7 @@ using System.Text.Json.Nodes;
 
 namespace EcoFlow.Mqtt.Api.Services;
 
-public class InternalMqttApi : IHostedService
+public class InternalMqttApi(InternalHttpApi httpApi) : IHostedService
 {
     private static readonly Encoding Encoding = new UTF8Encoding(false, true);
     private readonly ConcurrentDictionary<ISession, MqttState> _states = [];
@@ -24,7 +24,8 @@ public class InternalMqttApi : IHostedService
             lock (_states)
             {
                 return new OrderedDictionary<string, JsonNode>(_states.Values
-                    .SelectMany(state => state.Devices)
+                    .SelectMany(state => state.DeviceNodes)
+                    .ToDictionary(state => state.Key.SerialNumber, state => state.Value)
                     .OrderBy(state => state.Key));
             }
         }
@@ -43,7 +44,7 @@ public class InternalMqttApi : IHostedService
         _states.Clear();
     }
 
-    public async Task SubscribeDeviceAsync(ISession session, MqttConfiguration mqttConfiguration, string deviceSerialNumber, CancellationToken cancellationToken = default)
+    public async Task SubscribeDeviceAsync(ISession session, MqttConfiguration mqttConfiguration, DeviceInfo deviceInfo, CancellationToken cancellationToken = default)
     {
         var state = GetMqttState(session);
 
@@ -66,17 +67,17 @@ public class InternalMqttApi : IHostedService
         }
 
         lock (_states)
-            state.Devices[deviceSerialNumber] = new JsonObject();
+            state.DeviceNodes[deviceInfo] = new JsonObject();
 
         var subscribeOptionsBuilder = new MqttClientSubscribeOptionsBuilder();
 
         if (session is AppSession appSession)
-            subscribeOptionsBuilder = subscribeOptionsBuilder.WithTopicFilter(filter => filter.WithTopic($"/app/device/property/{deviceSerialNumber}"));
+            subscribeOptionsBuilder = subscribeOptionsBuilder.WithTopicFilter(filter => filter.WithTopic($"/app/device/property/{deviceInfo.SerialNumber}"));
         else
-            subscribeOptionsBuilder = subscribeOptionsBuilder.WithTopicFilter(filter => filter.WithTopic($"/open/{mqttConfiguration.Username}/{deviceSerialNumber}/quota"));
+            subscribeOptionsBuilder = subscribeOptionsBuilder.WithTopicFilter(filter => filter.WithTopic($"/open/{mqttConfiguration.Username}/{deviceInfo.SerialNumber}/quota"));
 
-        // .WithTopicFilter(filter => filter.WithTopic($"/app/{appSession.User.Id}/{deviceSerialNumber}/thing/property/set"))
-        // .WithTopicFilter(filter => filter.WithTopic($"/open/${mqttConfiguration.Username}/${deviceSerialNumber}/set"))
+        // .WithTopicFilter(filter => filter.WithTopic($"/app/{appSession.User.Id}/{deviceInfo.SerialNumber}/thing/property/set"))
+        // .WithTopicFilter(filter => filter.WithTopic($"/open/${mqttConfiguration.Username}/${deviceInfo.SerialNumber}/set"))
 
         var subscribeOptions = subscribeOptionsBuilder.Build();
         await state.Client.SubscribeAsync(subscribeOptions, cancellationToken);
@@ -95,7 +96,7 @@ public class InternalMqttApi : IHostedService
         }, this);
     }
 
-    private Task OnApplicationMessageReceived(MqttApplicationMessageReceivedEventArgs eventArgs)
+    private async Task OnApplicationMessageReceived(MqttApplicationMessageReceivedEventArgs eventArgs)
     {
         try
         {
@@ -105,7 +106,7 @@ public class InternalMqttApi : IHostedService
             if (parts.Length < 5)
             {
                 Console.WriteLine($"⚠️ Invalid topic received: {topic}");
-                return Task.CompletedTask;
+                return;
             }
 
             var serialNumber = parts[1] switch
@@ -115,12 +116,13 @@ public class InternalMqttApi : IHostedService
                 _ => null
             };
 
-            if (serialNumber is null)
+            if (string.IsNullOrWhiteSpace(serialNumber))
             {
                 Console.WriteLine($"⚠️ Invalid topic received: {topic}");
-                return Task.CompletedTask;
+                return;
             }
 
+            var deviceInfo = await httpApi.GetDeviceInfoAsync(serialNumber);
             var nodes = new List<JsonNode>(1);
 
             if (TryParse(eventArgs.ApplicationMessage.Payload, out var payload))
@@ -141,18 +143,18 @@ public class InternalMqttApi : IHostedService
                     else if (messageName.Contains("HeartBeatReport", StringComparison.OrdinalIgnoreCase))
                         nodes.Add(message.ToJson());
                     else
-                        Console.WriteLine($"⚠️ Unsupported binary message received from {serialNumber}: {message.ToStringWithTitle()}");
+                        Console.WriteLine($"⚠️ Unsupported binary message received from {deviceInfo}: {message.ToStringWithTitle()}");
                 }
             }
 
             if (nodes.Count is 0)
-                return Task.CompletedTask;
+                return;
 
             var updated = false;
 
             foreach (var state in _states.Values)
             {
-                if (!state.Devices.TryGetValue(serialNumber, out var deviceNode))
+                if (!state.DeviceNodes.TryGetValue(deviceInfo, out var deviceNode))
                     continue;
 
                 lock (_states)
@@ -165,14 +167,14 @@ public class InternalMqttApi : IHostedService
                 }
             }
 
-            Console.WriteLine(updated ? $"🖥  Updated state for {serialNumber}" : $"⚠️ No devices found for update: {topic} at {DateTime.Now:hh:mm:ss} => {string.Join("\n", nodes)}");
+            Console.WriteLine(updated ? $"🖥  Updated state for {deviceInfo}" : $"⚠️ No devices found for update: {topic} at {DateTime.Now:hh:mm:ss} => {string.Join("\n", nodes)}");
         }
         catch (Exception exception)
         {
             Console.Error.WriteLine($"⚠️ Error processing MQTT message: {exception.Message}");
         }
 
-        return Task.CompletedTask;
+        return;
 
         static bool TryParse(ReadOnlySequence<byte> bytes, [MaybeNullWhen(false)] out string value)
         {
@@ -189,5 +191,5 @@ public class InternalMqttApi : IHostedService
         }
     }
 
-    private record MqttState(IMqttClient Client, ConcurrentDictionary<string, JsonNode> Devices);
+    private record MqttState(IMqttClient Client, ConcurrentDictionary<DeviceInfo, JsonNode> DeviceNodes);
 }

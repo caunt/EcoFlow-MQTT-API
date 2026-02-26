@@ -5,6 +5,7 @@ using EcoFlow.Mqtt.Api.Json;
 using EcoFlow.Mqtt.Api.Models;
 using EcoFlow.Mqtt.Api.Session;
 using Microsoft.Extensions.Options;
+using Nito.AsyncEx;
 using Nito.Disposables.Internals;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -30,6 +31,34 @@ public class InternalHttpApi(IOptions<EcoFlowConfiguration> options, HttpClient 
         [property: JsonPropertyName("email")] string Email,
         [property: JsonPropertyName("userType")] string UserType
     );
+
+    private SerialNumberSet? _serialNumberSet;
+    private readonly AsyncLock _serialNumberSetLock = new();
+
+    public async Task<DeviceInfo> GetDeviceInfoAsync(string serialNumber, CancellationToken cancellationToken = default)
+    {
+        var serialNumberSet = await GetDeviceSerialNumberTemplatesAsync(cancellationToken);
+        return await serialNumberSet.GetDeviceInfoAsync(serialNumber, cancellationToken);
+    }
+
+    public async Task<SerialNumberSet> GetDeviceSerialNumberTemplatesAsync(CancellationToken cancellationToken = default)
+    {
+        using var disposable = await _serialNumberSetLock.LockAsync(cancellationToken);
+
+        if (_serialNumberSet is null)
+        {
+            const string token = "Ecoflow20230911@"; // com.ecoflow.iot.p193ui.viewmodel.MainViewModel
+            using var request = new HttpRequestMessage(HttpMethod.Get, new Uri(options.Value.AppApiUri, "/app/sku/getAllRealSnList?token=" + token));
+
+            var response = await httpClient.SendAsync(request, cancellationToken);
+            response.EnsureSuccessStatusCode();
+
+            var node = await response.Content.ReadFromJsonAsync(ApplicationJsonContext.Default.JsonNode, cancellationToken);
+            _serialNumberSet = new SerialNumberSet(options, httpClient, node?["data"]?.AsArray().Select(child => child?["sn"]?.GetValue<string>()).WhereNotNull().ToArray() ?? []);
+        }
+
+        return _serialNumberSet;
+    }
 
     public async Task<MqttConfiguration> GetMqttConfigurationAsync(ISession session, CancellationToken cancellationToken = default)
     {
@@ -68,7 +97,7 @@ public class InternalHttpApi(IOptions<EcoFlowConfiguration> options, HttpClient 
         }
     }
 
-    public async Task<string[]> GetDevicesAsync(ISession session, CancellationToken cancellationToken = default)
+    public async Task<DeviceInfo[]> GetDevicesAsync(ISession session, CancellationToken cancellationToken = default)
     {
         return session switch
         {
@@ -77,7 +106,7 @@ public class InternalHttpApi(IOptions<EcoFlowConfiguration> options, HttpClient 
             _ => throw new NotSupportedException($"Unsupported session type: {session}")
         };
 
-        async Task<string[]> GetDevicesCoreAsync(string path, Action<HttpRequestMessage> signRequest)
+        async Task<DeviceInfo[]> GetDevicesCoreAsync(string path, Action<HttpRequestMessage> signRequest)
         {
             using var request = new HttpRequestMessage(HttpMethod.Get, new Uri(options.Value.AppApiUri, path));
             signRequest(request);
@@ -86,12 +115,14 @@ public class InternalHttpApi(IOptions<EcoFlowConfiguration> options, HttpClient 
             response.EnsureSuccessStatusCode();
 
             var node = await response.Content.ReadFromJsonAsync(ApplicationJsonContext.Default.JsonNode, cancellationToken);
-            var devices = node?["data"] switch
+            var deviceSerialNumbers = node?["data"] switch
             {
                 JsonArray jsonArray => jsonArray.Select(value => value?["sn"]?.GetValue<string>()).WhereNotNull(),
                 JsonObject jsonObject => jsonObject.Select(category => category.Value?.AsObject()).WhereNotNull().SelectMany(devices => devices.Select(device => device.Key)),
                 _ => throw new DeviceListException($"Invalid device list received: {node}")
             };
+
+            var devices = await deviceSerialNumbers.Select(async deviceSerialNumber => await GetDeviceInfoAsync(deviceSerialNumber, cancellationToken)).WhenAll();
 
             return [.. devices];
         }
