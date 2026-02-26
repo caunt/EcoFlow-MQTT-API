@@ -55,6 +55,18 @@ Choose **one**:
 | 📱 **App** *(preferred)* | `ECOFLOW_USERNAME` + `ECOFLOW_PASSWORD` |
 | 🔑 **Open API** | `ECOFLOW_ACCESS_KEY` + `ECOFLOW_SECRET_KEY` |
 
+### Logging
+
+| Variable | Default | Example |
+|----------|---------|---------|
+| `ECOFLOW_VERBOSE_LOGGING` | `` | `true` |
+
+### Polling
+
+| Variable | Default | Example |
+|----------|---------|---------|
+| `ECOFLOW_POLLING_INTERVAL_SECONDS` | `15` | `-1` |
+
 ### Optional overrides
 
 #### EcoFlow
