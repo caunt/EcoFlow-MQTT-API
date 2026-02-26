@@ -26,10 +26,10 @@ public static class HostingExtensions
         {
             return services.Configure<EcoFlowConfiguration>(configuration =>
             {
-                if (TryGetEnvironmentVariable("ECOFLOW_APP_API_URI", out var ecoFlowAppApiUri))
+                if (TryGetEnvironmentVariable("APP_API_URI", out var ecoFlowAppApiUri))
                     configuration.AppApiUri = new Uri(ecoFlowAppApiUri);
 
-                if (TryGetEnvironmentVariable("ECOFLOW_OPEN_API_URI", out var ecoFlowOpenApiUri))
+                if (TryGetEnvironmentVariable("OPEN_API_URI", out var ecoFlowOpenApiUri))
                     configuration.OpenApiUri = new Uri(ecoFlowOpenApiUri);
             });
         }
@@ -38,7 +38,7 @@ public static class HostingExtensions
         {
             return services.Configure<EcoFlowConfiguration>(configuration =>
             {
-                if (TryGetEnvironmentVariable("ECOFLOW_POLLING_INTERVAL_SECONDS", out var value) && int.TryParse(value, out var pollingIntervalSeconds))
+                if (TryGetEnvironmentVariable("POLLING_INTERVAL_SECONDS", out var value) && int.TryParse(value, out var pollingIntervalSeconds))
                     configuration.PollingInterval = TimeSpan.FromSeconds(pollingIntervalSeconds);
                 else
                     configuration.PollingInterval = TimeSpan.FromSeconds(15);
@@ -49,7 +49,7 @@ public static class HostingExtensions
         {
             return services.Configure<EcoFlowConfiguration>(configuration =>
             {
-                if (TryGetEnvironmentVariable("ECOFLOW_VERBOSE_LOGGING", out var value) && bool.TryParse(value, out var verboseLogging))
+                if (TryGetEnvironmentVariable("VERBOSE_LOGGING", out var value) && bool.TryParse(value, out var verboseLogging))
                     configuration.VerboseLogging = verboseLogging;
             });
         }
@@ -76,8 +76,7 @@ public static class HostingExtensions
                     Console.WriteLine("⚠️ No authentication method configured.");
                     Console.WriteLine($"Set [{EcoFlowPrefix + accessKeyEnvironmentVariable} and {EcoFlowPrefix + secretKeyEnvironmentVariable}] or [{EcoFlowPrefix + usernameEnvironmentVariable} and {EcoFlowPrefix + passwordEnvironmentVariable}] environment variables.");
 
-                    if (errorHandler is not null)
-                        errorHandler();
+                    errorHandler?.Invoke();
                 }
                 else
                 {

@@ -41,8 +41,11 @@ public class InternalMqttPolling(IOptions<EcoFlowConfiguration> options, Interna
         var pollingInterval = options.Value.PollingInterval;
 
         if (pollingInterval <= TimeSpan.Zero)
+        {
+            Console.WriteLine("⚠️ Polling interval is disabled.");
             return;
-        
+        }
+
         using var periodicTimer = new PeriodicTimer(pollingInterval);
 
         do
