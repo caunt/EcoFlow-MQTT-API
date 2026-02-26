@@ -53,7 +53,7 @@ public static class HostingExtensions
                     configuration.VerboseLogging = verboseLogging;
             });
         }
-        
+
         public IServiceCollection ConfigureEcoFlowAuthentication(Action? errorHandler = null)
         {
             return services.Configure<EcoFlowConfiguration>(configuration =>
@@ -74,7 +74,7 @@ public static class HostingExtensions
                 if (authentications.Count is 0)
                 {
                     Console.WriteLine("⚠️ No authentication method configured.");
-                    Console.WriteLine($"Set [{EcoFlowPrefix + accessKeyEnvironmentVariable} and {EcoFlowPrefix + secretKeyEnvironmentVariable}] or [{EcoFlowPrefix + usernameEnvironmentVariable} and {EcoFlowPrefix + passwordEnvironmentVariable}] environment variables.");
+                    Console.WriteLine($"Set [{EcoFlowPrefix + usernameEnvironmentVariable} and {EcoFlowPrefix + passwordEnvironmentVariable}] or [{EcoFlowPrefix + accessKeyEnvironmentVariable} and {EcoFlowPrefix + secretKeyEnvironmentVariable}] environment variables.");
 
                     errorHandler?.Invoke();
                 }
