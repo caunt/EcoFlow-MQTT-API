@@ -56,18 +56,16 @@ public class InternalMqttPolling(InternalMqttApi mqttApi) : BackgroundService
         {
             var device = keys.ElementAt(i);
             var mqttConfiguration = _devices[device];
-
+            
             var topic = device.Session switch
             {
                 AppSession appSession => $"/app/{appSession.User.Id}/{device.SerialNumber}/thing/property/set",
                 OpenSession => $"/open/${mqttConfiguration.Username}/${device.SerialNumber}/set",
                 _ => throw new NotSupportedException($"Unsupported session type: {device.Session}")
             };
-
-            var payload = $$"""{"params":{},"operateType":"getAllTaskCfg","from":"Android","id":"{{CreateId()}}","lang":"en-us","version":"1.0","moduleSn":"{{device.SerialNumber}}","moduleType":1}""";
-
+            
+            var payload = $$"""{"params":{},"operateType":"getAllTaskCfg","from":"Android","lang":"en-us","id":"{{CreateId()}}","moduleSn":"{{device.SerialNumber}}","moduleType":1,"version":"1.0"}""";
             await mqttApi.SendMessageAsync(device, topic, payload, cancellationToken);
-
             Console.WriteLine($"📡 Sent polling message to {device}");
         }
     }

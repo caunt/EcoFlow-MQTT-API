@@ -3,6 +3,7 @@ using Nito.Disposables.Internals;
 using ProtobufUtilities;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using EcoFlow.Mqtt.Api.Exceptions;
 
 namespace EcoFlow.Mqtt.Api.Extensions;
 
@@ -85,8 +86,7 @@ public static class ProtobufExtensions
                 if (messageNames.Distinct().Count() is 1)
                     return candidates[0];
 
-                throw new InvalidOperationException($"Multiple messages could be parsed from the payload, and the best match is not significantly better than the second best match:\n" +
-                    $"{string.Join("\n", messages.Take(15).Select(message => $"{sizes[message]} => {message.GetType()}"))}\ncmdFunc: {cmdFunc}, cmdId:{cmdId}\n{Convert.ToHexString(byteString.Span)}");
+                throw new MessageMultipleMatchesException(messages, sizes, cmdFunc, cmdId, byteString);
             }
 
             return candidates[0];

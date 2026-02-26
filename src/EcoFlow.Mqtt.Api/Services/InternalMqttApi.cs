@@ -9,10 +9,13 @@ using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json.Nodes;
+using EcoFlow.Mqtt.Api.Configuration;
+using EcoFlow.Mqtt.Api.Exceptions;
+using Microsoft.Extensions.Options;
 
 namespace EcoFlow.Mqtt.Api.Services;
 
-public class InternalMqttApi : IHostedService
+public class InternalMqttApi(IOptions<EcoFlowConfiguration> options) : IHostedService
 {
     private static readonly Encoding Encoding = new UTF8Encoding(false, true);
     private readonly ConcurrentDictionary<ISession, MqttState> _states = [];
@@ -72,12 +75,23 @@ public class InternalMqttApi : IHostedService
         var subscribeOptionsBuilder = new MqttClientSubscribeOptionsBuilder();
 
         if (session is AppSession appSession)
-            subscribeOptionsBuilder = subscribeOptionsBuilder.WithTopicFilter(filter => filter.WithTopic($"/app/device/property/{deviceInfo.SerialNumber}"));
+        {
+            subscribeOptionsBuilder = subscribeOptionsBuilder
+                .WithTopicFilter(filter => filter.WithTopic($"/app/device/property/{deviceInfo.SerialNumber}"))
+                .WithTopicFilter(filter => filter.WithTopic($"/app/{appSession.User.Id}/{deviceInfo.SerialNumber}/thing/property/set"))
+                .WithTopicFilter(filter => filter.WithTopic($"/app/{appSession.User.Id}/{deviceInfo.SerialNumber}/thing/property/set_reply"))
+                .WithTopicFilter(filter => filter.WithTopic($"/app/{appSession.User.Id}/{deviceInfo.SerialNumber}/thing/property/get"))
+                .WithTopicFilter(filter => filter.WithTopic($"/app/{appSession.User.Id}/{deviceInfo.SerialNumber}/thing/property/get_reply"));
+        }
         else
-            subscribeOptionsBuilder = subscribeOptionsBuilder.WithTopicFilter(filter => filter.WithTopic($"/open/{mqttConfiguration.Username}/{deviceInfo.SerialNumber}/quota"));
-
-        // .WithTopicFilter(filter => filter.WithTopic($"/app/{appSession.User.Id}/{deviceInfo.SerialNumber}/thing/property/set"))
-        // .WithTopicFilter(filter => filter.WithTopic($"/open/${mqttConfiguration.Username}/${deviceInfo.SerialNumber}/set"))
+        {
+            subscribeOptionsBuilder = subscribeOptionsBuilder
+                .WithTopicFilter(filter => filter.WithTopic($"/open/{mqttConfiguration.Username}/{deviceInfo.SerialNumber}/quota"))
+                .WithTopicFilter(filter => filter.WithTopic($"/open/${mqttConfiguration.Username}/${deviceInfo.SerialNumber}/set"))
+                .WithTopicFilter(filter => filter.WithTopic($"/open/${mqttConfiguration.Username}/${deviceInfo.SerialNumber}/set_reply"))
+                .WithTopicFilter(filter => filter.WithTopic($"/open/${mqttConfiguration.Username}/${deviceInfo.SerialNumber}/get"))
+                .WithTopicFilter(filter => filter.WithTopic($"/open/${mqttConfiguration.Username}/${deviceInfo.SerialNumber}/get_reply"));
+        }
 
         var subscribeOptions = subscribeOptionsBuilder.Build();
         await state.Client.SubscribeAsync(subscribeOptions, cancellationToken);
@@ -125,10 +139,28 @@ public class InternalMqttApi : IHostedService
                 return;
             }
 
+            // /app/device/property/{deviceSerialNumber}
+            // /open/{mqttConfiguration.Username}/{deviceSerialNumber}/quota
+
+            var apiType = parts switch
+            {
+                [_, "app", "device", "property", ..] => ApiType.App,
+                [_, "open", _, _, "quota", ..] => ApiType.OpenPlatform,
+                _ => ApiType.Unknown
+            };
+            
+            if (apiType is ApiType.Unknown)
+            {
+                if (options.Value.VerboseLogging)
+                    Console.WriteLine($"⚠️ Unknown topic received: {topic} => {(TryParse(eventArgs.ApplicationMessage.Payload, out var unknownPayload) ? unknownPayload : Convert.ToHexString(eventArgs.ApplicationMessage.Payload.ToArray()))}");
+                
+                return;
+            }
+            
             var serialNumber = parts[1] switch
             {
-                "app" => parts[4], // /app/device/property/{deviceSerialNumber}
-                "open" => parts[3], // /open/{mqttConfiguration.Username}/{deviceSerialNumber}/quota
+                "app" => parts[4], 
+                "open" => parts[3],
                 _ => null
             };
 
@@ -187,7 +219,10 @@ public class InternalMqttApi : IHostedService
         }
         catch (Exception exception)
         {
-            Console.Error.WriteLine($"⚠️ Error processing MQTT message: {exception.Message}");
+            if (!options.Value.VerboseLogging && exception is MessageMultipleMatchesException)
+                return;
+            
+            await Console.Error.WriteLineAsync($"⚠️ Error processing MQTT message: {exception.Message}");
         }
 
         return;

@@ -25,6 +25,8 @@ builder.Logging.AddFilter("Microsoft.AspNetCore.Hosting.Diagnostics", LogLevel.E
 builder.Services.AddHttpClient();
 builder.Services.ConfigureAnonymousHttpClient();
 builder.Services.ConfigureEcoFlowEndpoints();
+builder.Services.ConfigureEcoFlowPolling();
+builder.Services.ConfigureEcoFlowLogging();
 builder.Services.ConfigureEcoFlowAuthentication(errorHandler: () =>
 {
     if (OperatingSystem.IsWindows())

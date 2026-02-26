@@ -34,6 +34,24 @@ public static class HostingExtensions
             });
         }
 
+        public IServiceCollection ConfigureEcoFlowPolling()
+        {
+            return services.Configure<EcoFlowConfiguration>(configuration =>
+            {
+                if (TryGetEnvironmentVariable("ECOFLOW_POLLING_INTERVAL_SECONDS", out var value) && int.TryParse(value, out var pollingIntervalSeconds))
+                    configuration.PollingInterval = TimeSpan.FromSeconds(pollingIntervalSeconds);
+            });
+        }
+
+        public IServiceCollection ConfigureEcoFlowLogging()
+        {
+            return services.Configure<EcoFlowConfiguration>(configuration =>
+            {
+                if (TryGetEnvironmentVariable("ECOFLOW_VERBOSE_LOGGING", out var value) && bool.TryParse(value, out var verboseLogging))
+                    configuration.VerboseLogging = verboseLogging;
+            });
+        }
+        
         public IServiceCollection ConfigureEcoFlowAuthentication(Action? errorHandler = null)
         {
             return services.Configure<EcoFlowConfiguration>(configuration =>
