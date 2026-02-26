@@ -34,10 +34,21 @@ jobs:
       - name: Install apkeep
         run: cargo install apkeep
 
-      - name: Download APK
+      - name: Download APK (direct URL, fallback to apkeep)
+        shell: bash
         run: |
+          set -euo pipefail
           mkdir -p downloads
+        
+          if curl -L --fail --retry 5 --retry-delay 2 --connect-timeout 20 --max-time 600 -o downloads/app-release.apk "https://ecoflow-service-us-cdn.ecoflow.com/apk/app-release.apk"; then
+            echo "Downloaded from EcoFlow CDN"
+            ls -lh downloads/app-release.apk
+            exit 0
+          fi
+        
+          echo "Direct download failed; falling back to apkeep"
           apkeep -a com.ecoflow downloads
+          ls -lh downloads
 
       - name: Export file descriptor set from APK
         run: |
