@@ -210,6 +210,8 @@ public class InternalMqttApi(IOptions<EcoFlowConfiguration> options) : IHostedSe
                     foreach (var node in nodes)
                     {
                         deviceNode.MergeWith(node);
+
+                        deviceNode["____updatedAtUtc"] = DateTimeOffset.UtcNow;
                         updated = true;
                     }
                 }
